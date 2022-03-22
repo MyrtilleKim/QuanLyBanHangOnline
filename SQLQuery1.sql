@@ -1,77 +1,51 @@
-﻿/*CREATE DATABASE qlbh_onl ON PRIMARY
-( NAME = qlbh_data, FILENAME = 'D:\CSDL\qlsv_data.mdf', SIZE = 10, MAXSIZE = 1000, FILEGROWTH = 10)
+﻿CREATE DATABASE qlbh_onl ON PRIMARY
+( NAME = qlbh_data, FILENAME = 'D:\CSDL\qlbh_data.mdf', SIZE = 10, MAXSIZE = 1000, FILEGROWTH = 10)
 LOG ON
-( NAME = qlbh_log, FILENAME = 'D:\CSDL\qlsv_log.ldf', SIZE = 10, FILEGROWTH = 5)*/
+( NAME = qlbh_log, FILENAME = 'D:\CSDL\qlbh_log.ldf', SIZE = 10, FILEGROWTH = 5)
 
 USE qlbh_onl
 GO
-/*DROP TABLE DOITAC
-DROP TABLE HOPDONG
-DROP TABLE SANPHAM 
-DROP TABLE KHACHHANG
-DROP TABLE NHANVIEN
-DROP TABLE USERS
-DROP TABLE TAIXE
-DROP TABLE QUYEN
-DROP TABLE CTQUYEN
-DROP TABLE DONHANG
 DROP TABLE CTDONHANG
+DROP TABLE DONHANG
+DROP TABLE CTPHIEUGIAO
+DROP TABLE PHIEUGIAO
+DROP TABLE SANPHAM 
 DROP TABLE LOAISANPHAM
-DROP TABLE USERS_QUYEN*/
+DROP TABLE KHACHHANG
+DROP TABLE TAIXE
+DROP TABLE QUANTRIVIEN
+DROP TABLE LICHSUGIAHAN
+DROP TABLE HOPDONG
+DROP TABLE DOITAC
+DROP TABLE NHANVIEN
+DROP TABLE ACCOUNT
+
 GO
 ---------------------------------------------------
--- DOITAC
-CREATE TABLE DOITAC
+-- ACCOUNT
+CREATE TABLE ACCOUNT
 (
-	MaDT varchar(9) NOT NULL PRIMARY KEY,
-	TenDT nvarchar(30),
-	TenDaiDien nvarchar(30),
+	Email varchar(30) NOT NULL PRIMARY KEY,
+	Pass varchar(30) NOT NULL,
+	Roles int NOT NULL
+)
+
+---------------------------------------------------
+-- TAIXE
+CREATE TABLE TAIXE 
+(
+	MaTX varchar(9) NOT NULL PRIMARY KEY,
+	TenTX nvarchar(30),
 	SDT varchar(15),
 	Email varchar(30) NOT NULL,
 	DChi nvarchar(30),
 	Quan nvarchar(15),
 	ThanhPho nvarchar(15),
-	SoChiNhanh smallint,
-	SoDH smallint,
-	MST varchar(15) 
-
+	CCCD varchar(11),
+	BienSoXe varchar(15),
+	STK varchar(20)
 )
 
----------------------------------------------------
--- HOPDONG
-CREATE TABLE HOPDONG
-(
-	MaHD varchar(9) NOT NULL PRIMARY KEY,
-	MaDT varchar(9) NOT NULL,
-	MaNV varchar(9) NOT NULL,
-	DoanhSo int NOT NULL,
-	ThoiHan smallint,
-	NgayBD date NOT NULL,
-	NgayKT date,
-	TrangThai tinyint,
-	PTHoaHong float
-)
-
----------------------------------------------------
--- SANPHAM
-CREATE TABLE SANPHAM 
-(
-	MaSP varchar(9) NOT NULL PRIMARY KEY,
-	TenSP nvarchar(100) NOT NULL,
-	MaDT varchar(9) NOT NULL,
-	MaLoaiSP varchar(9) NOT NULL,
-	DonVi nvarchar(9),
-	DonGia int,
-	HinhAnh image
-)
-
----------------------------------------------------
--- LOAISANPHAM
-CREATE TABLE LOAISANPHAM
-(
-	MaLoaiSP varchar(9) NOT NULL PRIMARY KEY,
-	TenLoaiSP nvarchar(30)
-)
 
 ---------------------------------------------------
 -- KHACHHANG
@@ -97,17 +71,87 @@ CREATE TABLE NHANVIEN
 )
 
 ---------------------------------------------------
+-- QUANTRIVIEN
+CREATE TABLE QUANTRIVIEN
+(
+	MaAD varchar(9) NOT NULL PRIMARY KEY,
+	TenAD nvarchar(30) NOT NULL,
+	Email varchar(30) NOT NULL
+)
+
+---------------------------------------------------
+-- DOITAC
+CREATE TABLE DOITAC
+(
+	MaDT varchar(9) NOT NULL PRIMARY KEY,
+	TenDT nvarchar(30),
+	TenDaiDien nvarchar(30),
+	SDT varchar(15),
+	Email varchar(30) NOT NULL,
+	DChi nvarchar(30),
+	Quan nvarchar(15),
+	ThanhPho nvarchar(15),
+	SoChiNhanh int,
+	SoDH int,
+	MST varchar(15) 
+
+)
+
+---------------------------------------------------
+-- HOPDONG
+CREATE TABLE HOPDONG
+(
+	MaHD varchar(9) NOT NULL PRIMARY KEY,
+	MaDT varchar(9) NOT NULL,
+	MaNV varchar(9) NOT NULL,
+	DoanhSo int NOT NULL,
+	ThoiHan int,
+	NgayBD date NOT NULL,
+	NgayKT date,
+	TrangThai int,
+	PTHoaHong float
+)
+---------------------------------------------------
+-- LICHSUGIAHAN
+CREATE TABLE LICHSUGIAHAN
+(
+	MaHD varchar(9) NOT NULL,
+	NgayHL date NOT NULL,
+	NgayKT date NOT NULL,
+	PTHoaHong float,
+	NgayCapNhat timestamp NOT NULL,
+	PRIMARY KEY(MaHD, NgayCapNhat)
+)
+
+---------------------------------------------------
+-- SANPHAM
+CREATE TABLE SANPHAM 
+(
+	MaSP varchar(9) NOT NULL PRIMARY KEY,
+	TenSP nvarchar(100) NOT NULL,
+	MaDT varchar(9) NOT NULL,
+	MaLoaiSP varchar(9) NOT NULL,
+	DonVi nvarchar(9),
+	DonGia int,
+	HinhAnh image
+)
+
+---------------------------------------------------
+-- LOAISANPHAM
+CREATE TABLE LOAISANPHAM
+(
+	MaLoaiSP varchar(9) NOT NULL PRIMARY KEY,
+	TenLoaiSP nvarchar(30)
+)
+
+---------------------------------------------------
 -- DONHANG
 CREATE TABLE DONHANG
 (
 	MaDH varchar(9) NOT NULL PRIMARY KEY,
 	MaKH varchar(9) NOT NULL,
 	NgayDat date NOT NULL,
-	MaTX varchar(9),
-	NgayGiao date,
-	PTThanhToan bit NOT NULL, 
-	PhiVanChuyen int,
-	TrangThai tinyint NOT NULL
+	TrangThai bit NOT NULL
 )
 
 ---------------------------------------------------
@@ -116,95 +160,113 @@ CREATE TABLE CTDONHANG
 (
 	MaDH varchar(9) NOT NULL,
 	MaSP varchar(9) NOT NULL,
-	SoLuong tinyint,
+	SoLuong int,
 	PRIMARY KEY(MaDH, MaSP)
 )
 
 ---------------------------------------------------
--- TAIXE
-CREATE TABLE TAIXE 
+-- PHIEUGIAO
+CREATE TABLE PHIEUGIAO
 (
-	MaTX varchar(9) NOT NULL PRIMARY KEY,
-	TenTX nvarchar(30),
-	SDT varchar(15),
-	Email varchar(30) NOT NULL,
-	DChi nvarchar(30),
-	Quan nvarchar(15),
-	ThanhPho nvarchar(15),
-	CCCD varchar(11),
-	BienSoXe varchar(15),
-	STK varchar(20)
+	MaGiao varchar(9) NOT NULL PRIMARY KEY,
+	MaDH varchar(9) NOT NULL,
+	MaTX varchar(9) NOT NULL,
+	NgayGiao Date NOT NULL,
+	PhiGiao int NOT NULL
 )
 
 ---------------------------------------------------
--- USERS
-CREATE TABLE USERS
+-- CTPHIEUGIAO
+CREATE TABLE CTPHIEUGIAO
 (
-	MaUser varchar(9) NOT NULL PRIMARY KEY,
-	Email nvarchar(30) NOT NULL,
-	Pass nvarchar(30) NOT NULL,
+	MaGiao varchar(9) NOT NULL,
+	MaSP varchar(9) NOT NULL,
+	SoLuong int,
+	DonGia int,
+	PRIMARY KEY(MaGiao, MaSP)
 )
 
----------------------------------------------------
--- QUYEN
-CREATE TABLE QUYEN
-(
-	MaQuyen varchar(9) NOT NULL PRIMARY KEY,
-	TenQuyen nvarchar(30) NOT NULL,
-)
 
----------------------------------------------------
--- CTQUYEN
-CREATE TABLE CTQUYEN
-(
-	MaCTQuyen varchar(9) NOT NULL PRIMARY KEY,
-	MaQuyen varchar(9) NOT NULL,
-	ACTION_CODE varchar(30) NOT NULL,
-	KTraAction BIT
-)
-
----------------------------------------------------
--- USERS_QUYEN
-CREATE TABLE USERS_QUYEN
-(
-	MaUQ varchar(9) NOT NULL PRIMARY KEY,
-	MaUser varchar(9) NOT NULL,
-	MaQuyen varchar(9) NOT NULL,
-	License BIT
-)
 GO
 
 ---------------------------------------------------
+-- Khoa ngoai cho bang DOITAC
+ALTER TABLE DOITAC ADD CONSTRAINT FK_DT FOREIGN KEY(Email) REFERENCES ACCOUNT(Email)
+
+-- Khoa ngoai cho bang NHANVIEN
+ALTER TABLE NHANVIEN ADD CONSTRAINT FK_NV FOREIGN KEY(Email) REFERENCES ACCOUNT(Email)
+
+-- Khoa ngoai cho bang KHACHHANG
+ALTER TABLE KHACHHANG ADD CONSTRAINT FK_KH FOREIGN KEY(Email) REFERENCES ACCOUNT(Email)
+
+-- Khoa ngoai cho bang TAIXE
+ALTER TABLE TAIXE ADD CONSTRAINT FK_TX FOREIGN KEY(Email) REFERENCES ACCOUNT(Email)
+
+-- Khoa ngoai cho bang QUANTRIVIEN
+ALTER TABLE QUANTRIVIEN ADD CONSTRAINT FK_AD FOREIGN KEY(Email) REFERENCES ACCOUNT(Email)
+
 -- Khoa ngoai cho bang HOPDONG
 ALTER TABLE HOPDONG ADD CONSTRAINT FK01_HD FOREIGN KEY(MaDT) REFERENCES DOITAC(MaDT)
 ALTER TABLE HOPDONG ADD CONSTRAINT FK02_HD FOREIGN KEY(MaNV) REFERENCES NHANVIEN(MaNV)
+
+--Khoa ngoai cho bang LICHSUGIAHAN
+ALTER TABLE LICHSUGIAHAN ADD CONSTRAINT FK_LSGH FOREIGN KEY(MaHD) REFERENCES HOPDONG(MaHD)
 
 -- Khoa ngoai cho bang SANPHAM
 ALTER TABLE SANPHAM ADD CONSTRAINT FK01_SP FOREIGN KEY(MaLoaiSP) REFERENCES LOAISANPHAM(MaLoaiSP)
 ALTER TABLE SANPHAM ADD CONSTRAINT FK02_SP FOREIGN KEY(MaDT) REFERENCES DOITAC(MaDT)
 
 -- Khoa ngoai cho bang DONHANG
-ALTER TABLE DONHANG ADD CONSTRAINT FK01_DH FOREIGN KEY(MaKH) REFERENCES KHACHHANG(MaKH)
-ALTER TABLE DONHANG ADD CONSTRAINT FK02_DH FOREIGN KEY(MaTX) REFERENCES TAIXE(MaTX)
+ALTER TABLE DONHANG ADD CONSTRAINT FK_DH FOREIGN KEY(MaKH) REFERENCES KHACHHANG(MaKH)
 
 -- Khoa ngoai cho bang CTDONHANG
 ALTER TABLE CTDONHANG ADD CONSTRAINT FK01_CTDH FOREIGN KEY(MaDH) REFERENCES DONHANG(MaDH)
 ALTER TABLE CTDONHANG ADD CONSTRAINT FK02_CTDH FOREIGN KEY(MaSP) REFERENCES SANPHAM(MaSP)
 
--- Khoa ngoai cho bang CTQUYEN
-ALTER TABLE CTQUYEN ADD CONSTRAINT FK_CTQUYEN FOREIGN KEY(MaQuyen) REFERENCES QUYEN(MaQuyen)
+-- Khoa ngoai cho bang PHIEUGIAO
+ALTER TABLE PHIEUGIAO ADD CONSTRAINT FK01_PG FOREIGN KEY(MaDH) REFERENCES DONHANG(MaDH)
+ALTER TABLE PHIEUGIAO ADD CONSTRAINT FK02_PG FOREIGN KEY(MaTX) REFERENCES TAIXE(MaTX)
 
--- Khoa ngoai cho bang USERS_QUYEN
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK01_UQ FOREIGN KEY(MaQuyen) REFERENCES QUYEN(MaQuyen)
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK02_UQ FOREIGN KEY(MaUser) REFERENCES USERS(MaUser)
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK03_UQ FOREIGN KEY(MaUser) REFERENCES DOITAC(MaDT)
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK04_UQ FOREIGN KEY(MaUser) REFERENCES NHANVIEN(MaNV)
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK05_UQ FOREIGN KEY(MaUser) REFERENCES TAIXE(MaTX)
-ALTER TABLE USERS_QUYEN ADD CONSTRAINT FK06_UQ FOREIGN KEY(MaUser) REFERENCES KHACHHANG(MaKH)
+-- Khoa ngoai cho bang CTPHIEUGIAO
+ALTER TABLE CTPHIEUGIAO ADD CONSTRAINT FK01_CTPG FOREIGN KEY(MaGiao) REFERENCES PHIEUGIAO(MaGiao)
+ALTER TABLE CTPHIEUGIAO ADD CONSTRAINT FK02_CTPG FOREIGN KEY(MaSP) REFERENCES SANPHAM(MaSP)
+
 ---------------------------------------------------
+-- Rang buoc
+ALTER TABLE DONHANG ADD CONSTRAINT DF_DH DEFAULT GETDATE() FOR NgayDat
+ALTER TABLE PHIEUGIAO ADD CONSTRAINT DF_PG DEFAULT GETDATE() FOR NgayGiao  
 ---------------------------------------------------
 set dateformat mdy
 ---------------------------------------------------
+-- ACCOUNT
+insert into ACCOUNT values('nva@gmail.com','123456',5)
+insert into ACCOUNT values('tnhan@gmail.com','123456',5)
+insert into ACCOUNT values('tmlong@gmail.com','123456',5)
+insert into ACCOUNT values('pvvinh@gmail.com','123456',5)
+insert into ACCOUNT values('lnminh@gmail.com','123456',5)
+insert into ACCOUNT values('tnlinh@gmail.com','123456',3)
+insert into ACCOUNT values('bvien@gmail.com','123456',3)
+insert into ACCOUNT values('hdlap@gmail.com','123456',3)
+insert into ACCOUNT values('thquang@gmail.com','123456',3)
+insert into ACCOUNT values('tlnong@gmail.com','123456',3)
+insert into ACCOUNT values('lntuan@gmail.com','123456',3)
+insert into ACCOUNT values('nnnhut@gmail.com','123456',2)
+insert into ACCOUNT values('ltpyen@gmail.com','123456',2)
+insert into ACCOUNT values('nvb@gmail.com','123456',2)
+insert into ACCOUNT values('nttuan@gmail.com','123456',2)
+insert into ACCOUNT values('nttthanh@gmail.com','123456',2)
+insert into ACCOUNT values('vtudi@gmail.com','123456',4)
+insert into ACCOUNT values('vttinh@gmail.com','123456',4)
+insert into ACCOUNT values('ttkhon@gmail.com','123456',4)
+insert into ACCOUNT values('hmhao@gmail.com','123456',4)
+insert into ACCOUNT values('ccdinh@gmail.com','123456',4)
+insert into ACCOUNT values('ptthua@gmail.com','123456',1)
+insert into ACCOUNT values('tquy@gmail.com','123456',1)
+
+--QUANTRIVIEN
+insert into QUANTRIVIEN values('AD001',N'Phạm Thừa Thừa', 'ptthua@gmail.com')
+insert into QUANTRIVIEN values('AD002',N'Tiểu Quỷ', 'tquy@gmail.com')
+
 -- KHACHHANG
 insert into KHACHHANG values('KH001',N'Nguyễnn Văn A','0123456789', 'nva@gmail.com', N'731 Trần Hưng Đạo', N'Q5', N'TP.HCM')
 insert into KHACHHANG values('KH002',N'Trần Ngọc Hân', '0123456789', 'tnhan@gmail.com', N'23/5 Nguyễn Trãi', N'Q5', N'TP.HCM')
@@ -263,14 +325,14 @@ insert into HOPDONG values('HD0004', 'DT005','NV002', 560000000, NULL, '11/11/20
 insert into HOPDONG values('HD0005', 'DT003','NV002', 1250000000, NULL, '02/10/2022','08/10/2022', 1, 10)
 
 --DONHANG
-insert into DONHANG values('DH0001', 'KH006', '12/10/2021',NULL, NULL, 1, 15000, 1)
-insert into DONHANG values('DH0002', 'KH001', '08/11/2021',NULL, NULL, 1, 17000, 2)
-insert into DONHANG values('DH0003', 'KH002', '06/11/2021',NULL, NULL, 0, 21000, 2)
-insert into DONHANG values('DH0004', 'KH006', '12/23/2021',NULL, NULL, 1, 15000, 3)
-insert into DONHANG values('DH0005', 'KH004', '12/19/2021',NULL, NULL, 0, 17000, 1)
-insert into DONHANG values('DH0006', 'KH005', '11/10/2021',NULL, NULL, 0, 0, 2)
-insert into DONHANG values('DH0007', 'KH002', '01/10/2022',NULL, NULL, 1, 12000, 3)
-insert into DONHANG values('DH0008', 'KH006', '01/28/2022',NULL, NULL, 0, 30000, 1)
+insert into DONHANG values('DH0001', 'KH006', '12/10/2021', 1)
+insert into DONHANG values('DH0002', 'KH001', '08/11/2021', 0)
+insert into DONHANG values('DH0003', 'KH002', '06/11/2021', 0)
+insert into DONHANG values('DH0004', 'KH006', '12/23/2021', 0)
+insert into DONHANG values('DH0005', 'KH004', '12/19/2021', 1)
+insert into DONHANG values('DH0006', 'KH005', '11/10/2021', 0)
+insert into DONHANG values('DH0007', 'KH002', '01/10/2022', 0)
+insert into DONHANG values('DH0008', 'KH006', '01/28/2022', 1)
 
 --CTDONHANG
 insert into CTDONHANG values('DH0001', 'SP0003', 1)
@@ -288,8 +350,28 @@ insert into CTDONHANG values('DH0005', 'SP0001', 3)
 insert into CTDONHANG values('DH0006', 'SP0005', 1)
 insert into CTDONHANG values('DH0007', 'SP0009', 3)
 insert into CTDONHANG values('DH0007', 'SP0008', 2)
-insert into CTDONHANG values('DH0008', 'SP0010', 1)
+insert into CTDONHANG values('DH0008', 'SP0003', 1)
+insert into CTDONHANG values('DH0008', 'SP0004', 7)
+insert into CTDONHANG values('DH0008', 'SP0005', 3)
+insert into CTDONHANG values('DH0008', 'SP0001', 2)
+insert into CTDONHANG values('DH0008', 'SP0010', 10)
 
+--PHIEUGIAO
+insert into PHIEUGIAO values('PG0001', 'DH0001', 'TX003', '12/17/2021', 15000)
+insert into PHIEUGIAO values('PG0002', 'DH0005', 'TX001', '01/01/2022', 12000)
+insert into PHIEUGIAO values('PG0003', 'DH0008', 'TX005', '02/03/2022', 20000)
+
+--CTPHIEUGIAO
+insert into CTPHIEUGIAO values('PG0001', 'SP0003', 1, 32000)
+insert into CTPHIEUGIAO values('PG0001', 'SP0004', 2, 3000)
+insert into CTPHIEUGIAO values('PG0001', 'SP0005', 3, 5000)
+insert into CTPHIEUGIAO values('PG0001', 'SP0001', 1, 262000)
+insert into CTPHIEUGIAO values('PG0002', 'SP0001', 3, 262000)
+insert into CTPHIEUGIAO values('PG0003', 'SP0003', 1, 32000)
+insert into CTPHIEUGIAO values('PG0003', 'SP0004', 7, 3000)
+insert into CTPHIEUGIAO values('PG0003', 'SP0005', 3, 5000)
+insert into CTPHIEUGIAO values('PG0003', 'SP0001', 2, 262000)
+insert into CTPHIEUGIAO values('PG0003', 'SP0010', 10, 471000)
 ---------------------------------------------------
 ---------------------------------------------------
 --1.	In ra danh sách các sản phẩm (MaSP, TenSP) của đối tác "Thiên Long"
