@@ -6,9 +6,9 @@ LOG ON
 USE qlbh_onl
 GO
 DROP TABLE CTDONHANG
-DROP TABLE DONHANG
 DROP TABLE CTPHIEUGIAO
 DROP TABLE PHIEUGIAO
+DROP TABLE DONHANG
 DROP TABLE SANPHAM 
 DROP TABLE LOAISANPHAM
 DROP TABLE KHACHHANG
@@ -358,7 +358,7 @@ insert into CTDONHANG values('DH0008', 'SP0010', 10)
 
 --PHIEUGIAO
 insert into PHIEUGIAO values('PG0001', 'DH0001', 'TX003', '12/17/2021', 15000)
-insert into PHIEUGIAO values('PG0002', 'DH0005', 'TX001', '01/01/2022', 12000)
+insert into PHIEUGIAO values('PG0002', 'DH0005', 'TX001', '01/01/2022', 20000)
 insert into PHIEUGIAO values('PG0003', 'DH0008', 'TX005', '02/03/2022', 20000)
 
 --CTPHIEUGIAO
@@ -389,3 +389,45 @@ SELECT DH.MaDH, SP.TenSP, DH.NgayDat, CTDH.SoLuong
 FROM KHACHHANG KH RIGHT JOIN DONHANG DH ON KH.MaKH = DH.MaKH JOIN CTDONHANG CTDH ON DH.MaDH = CTDH.MaDH JOIN SANPHAM SP ON CTDH.MaSP = SP.MaSP
 WHERE KH.TenKH = N'Lê Nhật Minh'
 ORDER BY DH.NgayDat DESC
+
+SELECT SUM(CTPG.SoLuong * CTPG.DonGia) + PG.PhiGiao AS TongTien
+FROM CTPHIEUGIAO CTPG JOIN PHIEUGIAO PG ON CTPG.MaGiao = PG.MaGiao
+--WHERE PG.MaGiao = 'PG0003'
+GROUP BY PG.PhiGiao
+
+
+
+---------------------------------------------------
+--STORE PROCEDURE & TRANSACTION
+
+--Truyen vao MaGiao, xuat ra tong tien cua phieu giao
+DROP PROC TongTien_PhieuGiao
+
+CREATE PROC	TongTien_PhieuGiao
+	@mapg varchar(9), @tongtien int OUTPUT
+AS
+BEGIN
+	IF NOT EXISTS( SELECT * FROM CTPHIEUGIAO WHERE MaGiao = @mapg )
+		RETURN 0
+	SELECT @tongtien = (SUM(CTPG.SoLuong * CTPG.DonGia) + PG.PhiGiao)
+	FROM CTPHIEUGIAO CTPG JOIN PHIEUGIAO PG ON CTPG.MaGiao = PG.MaGiao
+	WHERE PG.MaGiao = @mapg
+	GROUP BY PG.PhiGiao
+	RETURN 1
+END
+
+DECLARE @tt int 
+DECLARE @kq tinyint
+EXEC @kq = TongTien_PhieuGiao 'PG0003', @tt OUTPUT
+IF @kq = 0
+	PRINT N'Mã phiếu giao không tồn tại'
+ELSE
+	PRINT N'Tổng tiền: ' + CAST(@tt as nvarchar(20))
+
+CREATE PROC SoLuong_SP
+	@madh varchar(9), @masp varchar(9), @soluong int OUTPUT
+AS
+BEGIN
+	IF NOT EXISTS(SELECT * FROM DONHANG WHERE MaDH = @madh)
+		RETURN 0;
+	SELECT 

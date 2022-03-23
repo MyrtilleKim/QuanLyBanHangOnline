@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Box icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
+    <!-- Custom StyleSheet -->
+    <link rel="stylesheet" href="./stylesheets/styles.css" />
+    <title>Adding</title>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <div class="top-nav">
+      <div class="container d-flex">
+        <p>More information: (001) 2222-55555</p>
+        <ul class="d-flex">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="navigation">
+      <div class="nav-center container d-flex">
+        <a href="index.html" class="logo"><h1>PeeLadas</h1></a>
+
+        <ul class="nav-list d-flex">
+          <li class="nav-item">
+            <a href="/" class="nav-link">Home</a>
+          </li>
+          <li class="nav-item">
+            <a href="product.html" class="nav-link">Shop</a>
+          </li>
+          <li class="nav-item">
+            <a href="prodmgmt.html" class="nav-link">Management</a>
+          </li>
+          <li class="nav-item">
+            <a href="#about" class="nav-link">Adding</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contact" class="nav-link">Reviews</a>
+          </li>
+          <li class="icons d-flex">
+            <a href="login.html" class="icon">
+              <i class="bx bx-user"></i>
+            </a>
+            <div class="icon">
+              <i class="bx bx-search"></i>
+            </div>
+          </li>
+        </ul>
+
+        <div class="icons d-flex">
+          <a href="login.html" class="icon">
+            <i class="bx bx-user"></i>
+          </a>
+          <div class="icon">
+            <i class="bx bx-search"></i>
+          </div>
+        </div>
+
+        <div class="hamburger">
+          <i class="bx bx-menu-alt-left"></i>
+        </div>
+      </div>
+    </div>
+    <!-- Login -->
+    <div class="container">
+      <div class="login-form">
+        <form action="">
+          <h1>Add Product</h1>
+
+          <label for="prodname">Name</label>
+          <input type="text" placeholder="Product Name" name="prodname" required />
+
+          <label for="prodprice">Price</label>
+          <input
+            type="text"
+            placeholder="Product Price"
+            name="prodprice"
+            required
+          />
+
+          <label for="prodquantity">Quantity</label>
+          <input
+            type="text"
+            placeholder="Product Quantity"
+            name="prodquantity"
+            required
+          />
+		  
+		  <label for="prodstyle">Style</label>
+          <input
+            type="text"
+            placeholder="Product Style"
+            name="prodstyle"
+            required
+          />
+		  
+		  <label for="prodimg">Product Images:</label>
+		  <input type="file" id="prodimg" name="prodimg" accept="image/*"/>
+
+          <label for="prodes">Descripsion</label>
+            <textarea
+              type="text"
+              rows="25" cols="25"
+			  placeholder="Product Desription"
+              name="proddes"
+			  required
+            ></textarea>
+ 
+
+          <p>
+            By adding a product you agree to our
+            <a href="#">Terms & Privacy</a>.
+          </p>
+
+          <div class="buttons">
+            <button type="button" class="cancelbtn">Cancel</button>
+            <button type="submit" class="signupbtn">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="row">
+        <div class="col d-flex">
+          <h4>INFORMATION</h4>
+          <a href="">About us</a>
+          <a href="">Contact Us</a>
+          <a href="">Term & Conditions</a>
+          <a href="">Shipping Guide</a>
+        </div>
+        <div class="col d-flex">
+          <h4>USEFUL LINK</h4>
+          <a href="">Online Store</a>
+          <a href="">Customer Services</a>
+          <a href="">Promotion</a>
+        </div>
+        <div class="col d-flex">
+          <span><i class="bx bxl-facebook-square"></i></span>
+          <span><i class="bx bxl-instagram-alt"></i></span>
+          <span><i class="bx bxl-github"></i></span>
+          <span><i class="bx bxl-twitter"></i></span>
+          <span><i class="bx bxl-pinterest"></i></span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="./javascripts/slider.js"></script>
+  </body>
+</html>
