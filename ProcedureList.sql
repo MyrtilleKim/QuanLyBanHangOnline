@@ -5,25 +5,25 @@ GO
 
 ---------------------------------------------------
 --Truyen vao MaGiao, xuat ra tong tien cua phieu giao
-DROP PROC pr_TongTien_PhieuGiao
+DROP PROC pr_Total
 
-CREATE PROC	pr_TongTien_PhieuGiao
-	@mapg varchar(6), 
+CREATE PROC	pr_Total
+	@mapg char(6), 
 	@tongtien int OUTPUT
 AS
 BEGIN
-	IF NOT EXISTS( SELECT * FROM CTPHIEUGIAO WHERE MaGiao = @mapg )
+	IF NOT EXISTS( SELECT * FROM DELIVERY_DETAIL WHERE DeliveryID = @mapg )
 		RETURN 0
-	SELECT @tongtien = (SUM(CTPG.SoLuong * CTPG.DonGia) + PG.PhiGiao)
-	FROM CTPHIEUGIAO CTPG JOIN PHIEUGIAO PG ON CTPG.MaGiao = PG.MaGiao
-	WHERE PG.MaGiao = @mapg
-	GROUP BY PG.PhiGiao
+	SELECT @tongtien = (SUM(DD.Quantity * DD.Price) + DN.DeliveryCharges)
+	FROM DELIVERY_DETAIL DD JOIN DELIVERY_NOTE DN ON DD.DeliveryID = DN.DeliveryID
+	WHERE DN.DeliveryID = @mapg
+	GROUP BY DN.DeliveryCharges
 	RETURN 1
 END
 
 DECLARE @tt int 
 DECLARE @kq tinyint
-EXEC @kq = pr_TongTien_PhieuGiao 'PG0003', @tt OUTPUT
+EXEC @kq = pr_Total 'PG0003', @tt OUTPUT
 IF @kq = 0
 	PRINT N'Mã phiếu giao không tồn tại'
 ELSE
@@ -31,16 +31,16 @@ ELSE
 
 ---------------------------------------------------
 --Truyền vào MaDH và MaHH, xuất ra số lượng
-DROP PROC pr_SoLuongSP
-CREATE PROC pr_SoLuongSP
-	@madh varchar(6), 
-	@masp varchar(6), 
+DROP PROC pr_QuantityProd
+CREATE PROC pr_QuantityProd
+	@madh char(6), 
+	@masp char(6), 
 	@soluong int OUTPUT
 AS
 BEGIN
-	IF NOT EXISTS(SELECT * FROM DONHANG WHERE MaDH = @madh)
+	IF NOT EXISTS(SELECT * FROM RECEIPT WHERE ReceiptID = @madh)
 		RETURN 0;
-	SELECT @soluong=SoLuong FROM CTDONHANG WHERE MaDH = @madh AND MaSP = @masp
+	SELECT @soluong=Quantity FROM RECEIPT_DETAIL WHERE ReceiptID = @madh AND ProductID = @masp
 	IF @soluong IS NULL
 		RETURN 0;
 	RETURN 1;
@@ -48,7 +48,7 @@ END
 
 DECLARE @solg int 
 DECLARE @kq tinyint
-EXEC @kq = pr_SoLuongSP 'DH0001', 'SP0010', @solg OUTPUT
+EXEC @kq = pr_QuantityProd 'DH0001', 'SP0010', @solg OUTPUT
 IF @kq = 0
 	PRINT N'Mã đơn hàng hoặc mã sản phẩm không tồn tại'
 ELSE
@@ -56,46 +56,47 @@ ELSE
 
 ---------------------------------------------------
 --Truyền vào MaKH, hiện thị lịch sử đơn hàng
-DROP PROC pr_LichSuDH
-CREATE PROC pr_LichSuDH
-	@makh varchar(9)
+DROP PROC pr_ShoppingRec
+CREATE PROC pr_ShoppingRec
+	@makh char(6)
 AS
 BEGIN
-	SELECT DH.MaDH, DH.NgayDat, PG.MaGiao, PG.NgayGiao 
-	FROM DONHANG DH LEFT JOIN PHIEUGIAO PG ON DH.MaDH = PG.MaGiao
-	WHERE DH.MaKH = @makh
+	SELECT R.ReceiptID, R.OrderDate, DN.DeliveryID, DN.DeliveryDate 
+	FROM RECEIPT R LEFT JOIN DELIVERY_NOTE DN ON R.ReceiptID = DN.ReceiptID 
+	WHERE R.CustomerID = @makh
 END
 
-EXEC pr_LichSuDH 'KH0001'
+EXEC pr_ShoppingRec 'KH0001'
 
 ---------------------------------------------------
 --Thêm mới sản phẩm
-DROP PROC pr_ThemSP
-CREATE PROC pr_ThemSP
-	@masp varchar(6), 
-	@tensp nvarchar(100), 
-	@madt varchar(6), 
-	@malsp varchar(6),
-	@donvi nvarchar(9), 
+DROP PROC pr_InsProd
+CREATE PROC pr_InsProd
+	@masp char(6), 
+	@tensp varchar(100), 
+	@madt char(6), 
+	@malsp char(6),
+	@tonkho int, 
+	@donvi varchar(15),
 	@dongia int, 
 	@img image
 AS
 BEGIN
-	IF EXISTS(SELECT * FROM SANPHAM WHERE MaSP = @masp OR TenSP = @tensp)
+	IF EXISTS(SELECT * FROM PRODUCT WHERE ProductID = @masp OR ProductName = @tensp)
 		RETURN 0;
-	IF @dongia <= 0
+	IF @dongia <= 0 OR @tonkho <= 0
 		RETURN 0;
-	INSERT INTO SANPHAM (MaSP, TenSP, MaDT, MaLoaiSP, DonVi, DonGia, HinhAnh) VALUES(@masp, @tensp, @madt, @malsp, @donvi, @dongia, @img)
+	INSERT INTO PRODUCT VALUES(@masp, @tensp, @madt, @malsp, @tonkho, @donvi, @dongia, @img)
 	RETURN 1;
 END 
 
 DECLARE @kq tinyint
-EXEC @kq = pr_ThemSP 
-	'SP0011', 
-	N'Creamer đặc Ngôi Sao Phương Nam xanh lá lon 380g', 
+EXEC @kq = pr_InsProd
+	'SP0012', 
+	'Southern Star Sweetened Condensed Creamer 380g', 
 	'DT0004', 
-	'07', 
-	N'Lon', 
+	'08', 500,
+	'Can', 
 	17000, 
 	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg'
 IF @kq = 0
@@ -107,16 +108,16 @@ ELSE
 --TRIGGER
 ---------------------------------------------------
 -- Mỗi đơn đặt hàng chỉ có tối đa 1 phiếu giao hàng
-CREATE TRIGGER tr_PhieuGiao_DonHang
-ON PHIEUGIAO
+CREATE TRIGGER tr_Receipt_DeliNote
+ON DELIVERY_NOTE
 AFTER INSERT
 AS
 	DECLARE @madh varchar(6)
 	BEGIN
-		SELECT @madh = MaDH
+		SELECT @madh = ReceiptID
 		FROM inserted
 
-		IF EXISTS(SELECT * FROM PHIEUGIAO WHERE MaDH = @madh)
+		IF EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
 		BEGIN 
 			RAISERROR (N'Một đơn hàng chỉ có một phiếu giao',16,1)
 			ROLLBACK
@@ -126,20 +127,20 @@ AS
 
 ---------------------------------------------------
 -- Ngày giao hàng phải bằng hoặc sau ngày đặt hàng nhưng không được quá 30 ngày
-CREATE TRIGGER tr_NgayGiao_NgayDat
-ON PHIEUGIAO
+CREATE TRIGGER tr_DeliDate_OrderDate
+ON DELIVERY_NOTE
 AFTER INSERT, UPDATE
 AS
-	DECLARE @madh varchar(6), @ngaygiao date, @ngaydat date
+	DECLARE @madh char(6), @ngaygiao date, @ngaydat date
 	--Trường hợp thêm mới
 	IF NOT EXISTS (SELECT * FROM deleted)
 	BEGIN
-		SELECT @madh = MaDH, @ngaygiao = NgayGiao
+		SELECT @madh = ReceiptID, @ngaygiao = DeliveryDate
 		FROM inserted
 
-		SELECT @ngaydat = NgayDat 
-		FROM DONHANG
-		WHERE MaDH = @madh
+		SELECT @ngaydat = OrderDate 
+		FROM RECEIPT
+		WHERE ReceiptID = @madh
 
 		IF @ngaygiao < @ngaydat
 		BEGIN 
@@ -158,14 +159,14 @@ AS
 	ELSE
 	--Trường hợp sửa
 	BEGIN 
-		IF UPDATE(NgayGiao)
+		IF UPDATE(DeliveryDate)
 		BEGIN
-			SELECT @madh = MaDH, @ngaygiao = NgayGiao
+			SELECT @madh = ReceiptID, @ngaygiao = DeliveryDate
 			FROM inserted
 
-			SELECT @ngaydat = NgayDat 
-			FROM DONHANG
-			WHERE MaDH = @madh
+			SELECT @ngaydat = OrderDate
+			FROM RECEIPT
+			WHERE ReceiptID = @madh
 
 			IF @ngaygiao < @ngaydat
 			BEGIN 
@@ -185,42 +186,42 @@ AS
 
 ---------------------------------------------------
 --Lịch sử gia hạn hợp đồng
-DROP TRIGGER tr_LICHSUGIAHAN
-CREATE TRIGGER tr_LICHSUGIAHAN
-ON HOPDONG
+DROP TRIGGER tr_RenewalRec
+CREATE TRIGGER tr_RenewalRec
+ON CONTRACTS
 AFTER INSERT, DELETE
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO LICHSUGIAHAN(
-		MaHD,
-		NgayHL,
-		NgayKT,
-		PTHoaHong,
-		NgayCapNhat,
-		ThaoTac
+	INSERT INTO RENEWAL_REC(
+		ContractID,
+		StartDate,
+		EndDate,
+		CommissionP,
+		RecTimestamp,
+		Operation
 	)
-	SELECT ins.MaHD, ins.NgayBD, ins.NgayKT, ins.PTHoaHong, GETDATE(), 'INS'
+	SELECT ins.ContractID, ins.StartDate, ins.EndDate, ins.CommissionP, GETDATE(), 'INS'
 	FROM inserted ins
 	UNION ALL
-	SELECT del.MaHD, del.NgayBD, del.NgayKT, del.PTHoaHong, GETDATE(), 'DEL'
+	SELECT del.ContractID, del.StartDate, del.EndDate, del.CommissionP, GETDATE(), 'DEL'
 	FROM deleted del
 END
 
-CREATE TRIGGER tr_LICHSUGIAHAN_UPD
-ON HOPDONG
+CREATE TRIGGER tr_RenewalRec_UPD
+ON CONTRACTS
 AFTER UPDATE
 AS
 BEGIN
 	SET NOCOUNT ON;
-	INSERT INTO LICHSUGIAHAN(
-		MaHD,
-		NgayHL,
-		NgayKT,
-		PTHoaHong,
-		NgayCapNhat,
-		ThaoTac
+	INSERT INTO RENEWAL_REC(
+		ContractID,
+		StartDate,
+		EndDate,
+		CommissionP,
+		RecTimestamp,
+		Operation
 	)
-	SELECT del.MaHD, del.NgayBD, del.NgayKT, del.PTHoaHong, GETDATE(), 'UPD'
-	FROM deleted del
+	SELECT ins.ContractID, ins.StartDate, ins.EndDate, ins.CommissionP, GETDATE(), 'UPD'
+	FROM inserted ins
 END
