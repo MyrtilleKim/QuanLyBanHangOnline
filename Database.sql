@@ -122,10 +122,10 @@ CREATE TABLE CONTRACTS
 (
 	ContractID char(6) NOT NULL PRIMARY KEY,
 	PartnerID char(6) NOT NULL,
-	StaffID char(6) NOT NULL,
-	Sales int NOT NULL,
+	StaffID char(6),
+	Sales int,
 	Duration int,
-	StartDate date NOT NULL,
+	StartDate date,
 	EndDate date,
 	ContractStatus int,
 	CommissionP float
