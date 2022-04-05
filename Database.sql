@@ -227,7 +227,7 @@ CREATE TABLE RECEIPT_DETAIL
 -- DELIVERY_NOTE
 CREATE TABLE DELIVERY_NOTE
 (
-	ReceiptID char(6) NOT NULL,
+	ReceiptID char(6) NOT NULL UNIQUE,
 	ShipperID char(6) NOT NULL,
 	DeliveryDate Date NOT NULL,
 	PRIMARY KEY(ReceiptID, ShipperID)
@@ -280,7 +280,6 @@ ALTER TABLE DELIVERY_NOTE ADD CONSTRAINT FK02_PG FOREIGN KEY(ShipperID) REFERENC
 ---------------------------------------------------
 -- Contraint
 ALTER TABLE RECEIPT ADD CONSTRAINT DF_DH DEFAULT GETDATE() FOR OrderDate
-ALTER TABLE DELIVERY_NOTE ADD CONSTRAINT DF_PG DEFAULT GETDATE() FOR DeliveryDate  
 
 ---------------------------------------------------
 --TRIGGER
@@ -394,17 +393,6 @@ BEGIN
 	)FROM PRODUCT JOIN inserted ins ON PRODUCT.ProductID = ins.ProductID	
 END
 ---------------------------------------------------
-/*CREATE TRIGGER tr_InventoryUpd_UPD
-ON STORAGE
-AFTER UPDATE
-AS
-BEGIN
-	UPDATE PRODUCT SET NoInventory = NoInventory + (
-		SELECT Quantity FROM inserted WHERE ProductID = PRODUCT.ProductID) -
-		(SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
-	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID		
-END
----------------------------------------------------
 CREATE TRIGGER tr_InventoryUpd_DEL
 ON STORAGE
 AFTER DELETE
@@ -413,8 +401,7 @@ BEGIN
 	UPDATE PRODUCT SET NoInventory = NoInventory - (
 		SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
-END*/
-
+END
 ---------------------------------------------------
 -- Update Inventory_Receipt
 CREATE TRIGGER tr_InventoryReceipt_INS
@@ -448,7 +435,6 @@ BEGIN
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
 END
 ---------------------------------------------------
-
 ---------------------------------------------------
 set dateformat dmy
 ---------------------------------------------------
@@ -577,12 +563,12 @@ insert into CONTRACTS values('HD0005', 'DT0003','NV0002', 1250000000, 180, '10/0
 
 -- RECEIPT
 insert into RECEIPT values('DH0001', 'KH0006', '10/12/2021', 15000,1,4)
-insert into RECEIPT values('DH0002', 'KH0001', '11/08/2021', 15000,1,1)
-insert into RECEIPT values('DH0003', 'KH0002', '11/06/2021', 15000,0,1)
-insert into RECEIPT values('DH0004', 'KH0006', '23/12/2021', 15000,0,1)
+insert into RECEIPT values('DH0002', 'KH0001', '01/04/2022', 15000,1,1)
+insert into RECEIPT values('DH0003', 'KH0002', '04/04/2022', 15000,0,1)
+insert into RECEIPT values('DH0004', 'KH0006', '05/04/2022', 15000,0,1)
 insert into RECEIPT values('DH0005', 'KH0004', '19/12/2021', 15000,0,4)
-insert into RECEIPT values('DH0006', 'KH0005', '10/11/2021', 15000,0,1)
-insert into RECEIPT values('DH0007', 'KH0002', '10/01/2022', 15000,1,2)
+insert into RECEIPT values('DH0006', 'KH0005', '22/03/2022', 15000,0,1)
+insert into RECEIPT values('DH0007', 'KH0002', '30/03/2022', 15000,1,2)
 insert into RECEIPT values('DH0008', 'KH0006', '28/01/2022', 15000,1,4)
 
 -- RECEIPT_DETAIL
@@ -613,4 +599,3 @@ insert into DELIVERY_NOTE values('DH0005', 'TX0001', '01/01/2022')
 insert into DELIVERY_NOTE values('DH0008', 'TX0005', '03/02/2022')
 ---------------------------------------------------
 ---------------------------------------------------
-

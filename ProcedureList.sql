@@ -98,8 +98,7 @@ BEGIN
 END 
 
 EXEC pr_OrderConfirmation 'KH0005',15000,1
-select * from RECEIPT
-SELECT * FROM PRODUCT
+
 ---------------------------------------------------
 -- Add Receipt Detail
 DROP PROC pr_addRDetail
@@ -109,22 +108,70 @@ CREATE PROC pr_addRDetail
 	@solg int
 AS
 BEGIN
-	/*IF @solg > (SELECT NoInventory FROM PRODUCT WHERE ProductID = @masp)
-		RETURN 0;*/
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
-		--RETURN 1;
 END
-DECLARE @kq tinyint
 EXEC pr_addRDetail 'DH0009', 'SP0002', 1
-if(@kq = 0)
-	print 'ko có hàng'
 
 ---------------------------------------------------
 -- Update Inventory
 DROP PROC pr_InventoryUpd_UPD
 CREATE PROC pr_InventoryUpd_UPD
+	@macn char(6),
+	@masp char(6),
 	@tonkho int
 AS
 BEGIN
-	
+	BEGIN TRANSACTION
+		UPDATE PRODUCT SET NoInventory = NoInventory + @tonkho -
+			(SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) 
+			WHERE ProductID = @masp
+		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
+	COMMIT TRANSACTION
 END
+EXEC pr_InventoryUpd_UPD 'CN0004', 'SP0002', 94
+---------------------------------------------------
+-- Take delivery
+DROP PROC pr_TakeDelivery
+CREATE PROC pr_TakeDelivery
+	@madh char(6),
+	@matx char(6)
+AS
+BEGIN 
+	IF (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh) != 1
+		RETURN 0;
+	BEGIN TRANSACTION 
+		UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = @madh
+		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(@madh,@matx)
+	COMMIT TRANSACTION
+	RETURN 1;
+END
+
+DECLARE @kq TINYINT
+EXEC @kq = pr_TakeDelivery 'DH0002', 'TX0005'
+IF @kq = 0 
+	PRINT 'Không thể nhận đơn'
+---------------------------------------------------
+-- Cancel delivery
+DROP PROC pr_CancelDelivery
+CREATE PROC pr_CancelDelivery
+	@madh char(6)
+AS
+BEGIN 
+	DECLARE @tinhtrang tinyint
+	SELECT @tinhtrang=ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh
+	IF @tinhtrang = 1 OR @tinhtrang = 0 OR @tinhtrang = 4
+		RETURN 0
+	BEGIN TRANSACTION trs_CancelDelivery
+		UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
+		IF NOT EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
+			ROLLBACK TRANSACTION trs_CancelDelivery
+		DELETE DELIVERY_NOTE WHERE ReceiptID = @madh
+	COMMIT TRANSACTION
+	RETURN 1;
+END
+DECLARE @kq TINYINT
+EXEC @kq = pr_CancelDelivery 'DH0002'
+IF @kq = 0 
+	PRINT 'Không thể HUỶ đơn'
+Select * from RECEIPT
+SELECT * FROM DELIVERY_NOTE
