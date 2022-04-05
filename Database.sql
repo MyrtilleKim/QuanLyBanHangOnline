@@ -21,6 +21,7 @@ DROP TABLE PARTNERS
 DROP TABLE STAFF
 DROP TABLE ACCOUNT
 DROP FUNCTION AUTO_RecID
+DROP FUNCTION AUTO_ReceiptID
 GO
 CREATE FUNCTION AUTO_RecID()
 RETURNS CHAR(6)
@@ -38,7 +39,23 @@ BEGIN
 		END
 	RETURN @ID
 END
-
+---------------------------------------------------
+CREATE FUNCTION AUTO_ReceiptID()
+RETURNS CHAR(6)
+AS
+BEGIN
+	DECLARE @ID VARCHAR(6)
+	IF (SELECT COUNT(ReceiptID) FROM RECEIPT) = 0
+		SET @ID = '0'
+	ELSE
+		SELECT @ID = MAX(RIGHT(ReceiptID, 3)) FROM RECEIPT
+		SELECT @ID = CASE
+			WHEN @ID >= 0 and @ID < 9 THEN 'DH000' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 9 THEN 'DH00' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+			WHEN @ID >= 99 THEN 'DH0' + CONVERT(CHAR, CONVERT(INT, @ID) + 1)
+		END
+	RETURN @ID
+END
 ---------------------------------------------------
 -- ACCOUNT
 CREATE TABLE ACCOUNT
@@ -128,7 +145,8 @@ CREATE TABLE STORAGE
 	BranchID char(6) NOT NULL,
 	ProductID char(6) NOT NULL,
 	Quantity int,
-	PRIMARY KEY(BranchID, ProductID)
+	PRIMARY KEY(BranchID, ProductID),
+	CHECK(Quantity >= 0)
 )
 ---------------------------------------------------
 -- CONTRACTS
@@ -168,7 +186,8 @@ CREATE TABLE PRODUCT
 	NoInventory int DEFAULT 0,
 	Unit varchar(30),
 	Price int,
-	Img image
+	Img image,
+	CHECK (NoInventory >= 0)
 )
 
 ---------------------------------------------------
@@ -183,13 +202,13 @@ CREATE TABLE PRODUCT_TYPE
 -- RECEIPT
 CREATE TABLE RECEIPT
 (
-	ReceiptID char(6) NOT NULL PRIMARY KEY,
+	ReceiptID char(6) NOT NULL PRIMARY KEY CONSTRAINT IDrep DEFAULT DBO.AUTO_ReceiptID(),
 	CustomerID char(6) NOT NULL,
 	OrderDate date NOT NULL,
 	DeliveryCharges int NOT NULL,
 	PaymentMethod bit NOT NULL,
-	ReceiptStatus tinyint NOT NULL,
-	CHECK(ReceiptStatus = 1 OR ReceiptStatus = 2 OR ReceiptStatus = 3 OR ReceiptStatus = 4)
+	ReceiptStatus tinyint NOT NULL DEFAULT 1,
+	CHECK(ReceiptStatus = 0 OR ReceiptStatus = 1 OR ReceiptStatus = 2 OR ReceiptStatus = 3 OR ReceiptStatus = 4)
 )
 
 ---------------------------------------------------
@@ -200,7 +219,8 @@ CREATE TABLE RECEIPT_DETAIL
 	ProductID char(6) NOT NULL,
 	Quantity int,
 	Price int,
-	PRIMARY KEY(ReceiptID, ProductID)
+	PRIMARY KEY(ReceiptID, ProductID),
+	CHECK (Quantity > 0)
 )
 
 ---------------------------------------------------
@@ -265,25 +285,6 @@ ALTER TABLE DELIVERY_NOTE ADD CONSTRAINT DF_PG DEFAULT GETDATE() FOR DeliveryDat
 ---------------------------------------------------
 --TRIGGER
 ---------------------------------------------------
--- Mỗi đơn đặt hàng chỉ có tối đa 1 phiếu giao hàng
-CREATE TRIGGER tr_Receipt_DeliNote
-ON DELIVERY_NOTE
-AFTER INSERT
-AS
-	DECLARE @madh varchar(6)
-	BEGIN
-		SELECT @madh = ReceiptID
-		FROM inserted
-
-		IF EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
-		BEGIN 
-			RAISERROR (N'Một đơn hàng chỉ có một phiếu giao',16,1)
-			ROLLBACK
-			RETURN;
-		END
-	END
-
----------------------------------------------------
 -- Ngày giao hàng phải bằng hoặc sau ngày đặt hàng nhưng không được quá 30 ngày
 CREATE TRIGGER tr_DeliDate_OrderDate
 ON DELIVERY_NOTE
@@ -341,7 +342,6 @@ AS
 			END
 		END
 	END
-
 ---------------------------------------------------
 --Lịch sử gia hạn hợp đồng
 CREATE TRIGGER tr_RenewalRec
@@ -394,7 +394,7 @@ BEGIN
 	)FROM PRODUCT JOIN inserted ins ON PRODUCT.ProductID = ins.ProductID	
 END
 ---------------------------------------------------
-CREATE TRIGGER tr_InventoryUpd_UPD
+/*CREATE TRIGGER tr_InventoryUpd_UPD
 ON STORAGE
 AFTER UPDATE
 AS
@@ -413,7 +413,7 @@ BEGIN
 	UPDATE PRODUCT SET NoInventory = NoInventory - (
 		SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
-END
+END*/
 
 ---------------------------------------------------
 -- Update Inventory_Receipt
@@ -611,12 +611,6 @@ insert into RECEIPT_DETAIL values('DH0008', 'SP0010', 10,471000)
 insert into DELIVERY_NOTE values('DH0001', 'TX0003', '17/12/2021')
 insert into DELIVERY_NOTE values('DH0005', 'TX0001', '01/01/2022')
 insert into DELIVERY_NOTE values('DH0008', 'TX0005', '03/02/2022')
-
 ---------------------------------------------------
 ---------------------------------------------------
 
-
-BEGIN TRANSACTION
-SET TRANSACTION ISOLATION LEVEL READ COMMITTED
-select * from PRODUCT
-commit
