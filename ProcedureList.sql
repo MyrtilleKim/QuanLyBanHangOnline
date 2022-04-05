@@ -139,17 +139,22 @@ AS
 BEGIN 
 	IF (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh) != 1
 		RETURN 0;
-	BEGIN TRANSACTION 
-		UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = @madh
-		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(@madh,@matx)
-	COMMIT TRANSACTION
-	RETURN 1;
+	BEGIN TRY
+		BEGIN TRANSACTION 
+			UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = @madh
+			INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(@madh,@matx)
+		COMMIT TRANSACTION;
+		RETURN 1;
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; 
+		RETURN 0;
+	END CATCH
 END
-
-DECLARE @kq TINYINT
-EXEC @kq = pr_TakeDelivery 'DH0002', 'TX0005'
-IF @kq = 0 
-	PRINT 'Không thể nhận đơn'
+DECLARE @kq tinyint
+EXEC @kq = pr_TakeDelivery 'DH0001', 'TX0006'
+if @kq = 0
+	PRINT 'Can not take delivery'
 ---------------------------------------------------
 -- Cancel delivery
 DROP PROC pr_CancelDelivery
@@ -161,17 +166,25 @@ BEGIN
 	SELECT @tinhtrang=ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh
 	IF @tinhtrang = 1 OR @tinhtrang = 0 OR @tinhtrang = 4
 		RETURN 0
-	BEGIN TRANSACTION trs_CancelDelivery
+	IF NOT EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
+		RETURN 0
+	BEGIN TRANSACTION
 		UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
-		IF NOT EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
-			ROLLBACK TRANSACTION trs_CancelDelivery
 		DELETE DELIVERY_NOTE WHERE ReceiptID = @madh
 	COMMIT TRANSACTION
-	RETURN 1;
+	RETURN 1
 END
-DECLARE @kq TINYINT
-EXEC @kq = pr_CancelDelivery 'DH0002'
-IF @kq = 0 
-	PRINT 'Không thể HUỶ đơn'
+DECLARE @kq tinyint
+EXEC @kq = pr_CancelDelivery 'DH0001'
+if @kq = 0
+	PRINT 'Can not Cancel delivery'
 Select * from RECEIPT
 SELECT * FROM DELIVERY_NOTE
+update RECEIPT set ReceiptStatus = 2 where ReceiptID = 'DH0001'
+
+/*BEGIN TRAN
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	SELECT * FROM PRODUCT
+
+	BEGIN TRAN */
+

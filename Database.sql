@@ -229,7 +229,7 @@ CREATE TABLE DELIVERY_NOTE
 (
 	ReceiptID char(6) NOT NULL UNIQUE,
 	ShipperID char(6) NOT NULL,
-	DeliveryDate Date NOT NULL,
+	DeliveryDate Date,
 	PRIMARY KEY(ReceiptID, ShipperID)
 )
 GO
