@@ -55,6 +55,16 @@ ELSE
 	PRINT N'Số lượng sản phẩm có trong đơn hàng: ' + CAST(@solg as nvarchar(5))
 
 ---------------------------------------------------
+-- Get Product By PartnerID
+DROP PROC pr_getProductByPartner
+CREATE PROC pr_getProductByPartner
+	@madt char(6)
+AS
+BEGIN
+	SELECT BR.BranchID, P.ProductID, P.ProductName, ST.Quantity, P.Price
+	FROM (BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID 
+	WHERE BR.PartnerID = @madt
+END
 ---------------------------------------------------
 --Thêm mới sản phẩm
 DROP PROC pr_InsProd
@@ -89,15 +99,16 @@ ELSE
 -- Order confirmation
 DROP PROC pr_OrderConfirmation
 CREATE PROC pr_OrderConfirmation
+	@mahd char(6),
 	@makh char(6),
 	@phiship int,
 	@pttt bit
 AS
 BEGIN
-	INSERT INTO RECEIPT (CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(@makh, GETDATE(), @phiship, @pttt)
+	INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(@mahd, @makh, GETDATE(), @phiship, @pttt)
 END 
 
-EXEC pr_OrderConfirmation 'KH0005',15000,1
+EXEC pr_OrderConfirmation 'DH0009','KH0005',15000,1
 
 ---------------------------------------------------
 -- Add Receipt Detail
@@ -178,13 +189,20 @@ DECLARE @kq tinyint
 EXEC @kq = pr_CancelDelivery 'DH0001'
 if @kq = 0
 	PRINT 'Can not Cancel delivery'
-Select * from RECEIPT
+
+BEGIN TRAN
+SELECT * FROM RECEIPT WHERE ReceiptStatus = 1
+
+DECLARE @kq tinyint
+EXEC @kq = pr_TakeDelivery 'DH0002', 'TX0004'
+if @kq = 0
+	PRINT 'Can not take delivery'
+
+SELECT * FROM RECEIPT WHERE ReceiptStatus = 1
+COMMIT TRAN
+
+BEGIN TRAN
+
+
 SELECT * FROM DELIVERY_NOTE
-update RECEIPT set ReceiptStatus = 2 where ReceiptID = 'DH0001'
-
-/*BEGIN TRAN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-	SELECT * FROM PRODUCT
-
-	BEGIN TRAN */
-
+	

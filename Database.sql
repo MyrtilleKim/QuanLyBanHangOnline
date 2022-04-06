@@ -202,7 +202,7 @@ CREATE TABLE PRODUCT_TYPE
 -- RECEIPT
 CREATE TABLE RECEIPT
 (
-	ReceiptID char(6) NOT NULL PRIMARY KEY CONSTRAINT IDrep DEFAULT DBO.AUTO_ReceiptID(),
+	ReceiptID char(6) NOT NULL PRIMARY KEY,
 	CustomerID char(6) NOT NULL,
 	OrderDate date NOT NULL,
 	DeliveryCharges int NOT NULL,
@@ -285,7 +285,7 @@ ALTER TABLE RECEIPT ADD CONSTRAINT DF_DH DEFAULT GETDATE() FOR OrderDate
 --TRIGGER
 ---------------------------------------------------
 -- Ngày giao hàng phải bằng hoặc sau ngày đặt hàng nhưng không được quá 30 ngày
-CREATE TRIGGER tr_DeliDate_OrderDate
+/*CREATE TRIGGER tr_DeliDate_OrderDate
 ON DELIVERY_NOTE
 AFTER INSERT, UPDATE
 AS
@@ -340,7 +340,7 @@ AS
 				RETURN
 			END
 		END
-	END
+	END*/
 ---------------------------------------------------
 --Lịch sử gia hạn hợp đồng
 CREATE TRIGGER tr_RenewalRec
@@ -553,7 +553,7 @@ insert into STORAGE values('CN0008', 'SP0008', 78)
 insert into STORAGE values('CN0008', 'SP0009', 5)
 insert into STORAGE values('CN0009', 'SP0009', 546)
 insert into STORAGE values('CN0009', 'SP0008', 54)
-
+SELECT * FROM STORAGE
 -- CONTRACTS
 insert into CONTRACTS values('HD0001', 'DT0001','NV0003', 262000000, 180, '13/06/2021',NULL, 4, 10.2)
 insert into CONTRACTS values('HD0002', 'DT0004','NV0005', 780000000, 180, NULL, NULL, 1, 11)
@@ -562,14 +562,14 @@ insert into CONTRACTS values('HD0004', 'DT0005','NV0002', 560000000, 180, '11/11
 insert into CONTRACTS values('HD0005', 'DT0003','NV0002', 1250000000, 180, '10/05/2022', NULL, 2, 10)
 
 -- RECEIPT
-insert into RECEIPT values('DH0001', 'KH0006', '10/12/2021', 15000,1,4)
+insert into RECEIPT values('DH0001', 'KH0006', '10/12/2021', 15000,1,2)
 insert into RECEIPT values('DH0002', 'KH0001', '01/04/2022', 15000,1,1)
 insert into RECEIPT values('DH0003', 'KH0002', '04/04/2022', 15000,0,1)
 insert into RECEIPT values('DH0004', 'KH0006', '05/04/2022', 15000,0,1)
-insert into RECEIPT values('DH0005', 'KH0004', '19/12/2021', 15000,0,4)
+insert into RECEIPT values('DH0005', 'KH0004', '19/12/2021', 15000,0,2)
 insert into RECEIPT values('DH0006', 'KH0005', '22/03/2022', 15000,0,1)
-insert into RECEIPT values('DH0007', 'KH0002', '30/03/2022', 15000,1,2)
-insert into RECEIPT values('DH0008', 'KH0006', '28/01/2022', 15000,1,4)
+insert into RECEIPT values('DH0007', 'KH0002', '30/03/2022', 15000,1,1)
+insert into RECEIPT values('DH0008', 'KH0006', '28/01/2022', 15000,1,2)
 
 -- RECEIPT_DETAIL
 insert into RECEIPT_DETAIL values('DH0001', 'SP0003', 1,32000)
@@ -594,8 +594,9 @@ insert into RECEIPT_DETAIL values('DH0008', 'SP0001', 2,262000)
 insert into RECEIPT_DETAIL values('DH0008', 'SP0010', 10,471000)
 
 -- DELIVERY_NOTE
-insert into DELIVERY_NOTE values('DH0001', 'TX0003', '17/12/2021')
-insert into DELIVERY_NOTE values('DH0005', 'TX0001', '01/01/2022')
-insert into DELIVERY_NOTE values('DH0008', 'TX0005', '03/02/2022')
+insert into DELIVERY_NOTE values('DH0001', 'TX0003', NULL)
+insert into DELIVERY_NOTE values('DH0005', 'TX0001', NULL)
+insert into DELIVERY_NOTE values('DH0008', 'TX0005', NULL)
+
 ---------------------------------------------------
 ---------------------------------------------------
