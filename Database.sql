@@ -186,7 +186,7 @@ CREATE TABLE PRODUCT
 	NoInventory int DEFAULT 0,
 	Unit varchar(30),
 	Price int,
-	Img image,
+	Img varchar(200),
 	CHECK (NoInventory >= 0)
 )
 
@@ -524,12 +524,12 @@ insert into PRODUCT_TYPE values('08', 'Beverage')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0001', 'OMO Auto Washing Powder 6kg','05', 'Pack', 262000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648138549/Shopping_onl/Bot-Giat-Omo-6kg_q4lden.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0002', 'Inverter air conditioner 1HP V10ENH','02', 'Piece', 6850000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648138680/Shopping_onl/May-lanh-LG-1-HP-V10ENH-Inverter-Chinh-Hang-1_xzii6t.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0003', 'OMO Auto Washing Powder with a Touch of Comfort Freshness 720g','05', 'Pack', 32000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648185476/Shopping_onl/8934868135029_mob01a.jpg')
-insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0004', 'Ballpoint pen TL-027','01', 'Piece', 3000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648185490/Shopping_onl/but_bi_thien_long_tl-027_fd2ed94624164e949898577f64580185_1_jbcy94.webp')
-insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0005', 'Oil brush  PM-04','01', 'Piece', 5000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648185653/Shopping_onl/but_long_dau_thien_long_pm-04_fbc72b61c6b24523aac15593f7553306_xo43a7.webp')
-insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0006', '100-page notebook','01', 'Pack of 10', 23000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648186004/Shopping_onl/vo-5-o-ly-2x2mm-doraemon-fly-96t-jpeg_etze4n.webp')
+insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0004', 'Ballpoint pen TL-027','01', 'Piece', 3000, 'https://res.cloudinary.com/gia-minh/image/upload/v1649232433/but_bi_thien_long_kz5kyf.jpg')
+insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0005', 'Oil brush  PM-04','01', 'Piece', 5000, 'https://res.cloudinary.com/gia-minh/image/upload/v1649232591/but_long_dau_thien_long_anfhsh.jpg')
+insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0006', '100-page notebook','01', 'Pack of 10', 23000, 'https://res.cloudinary.com/gia-minh/image/upload/v1649232652/tap-100-trang-lang-huong-37_gaouas.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0007', '200-page notebook','01', 'Piece', 4500, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648188654/Shopping_onl/tap-sinh-vien-ke-ngang-campus-great-200-trang-qh64r_123f1ef94abf41c981e50a555b249634_cxa0ok.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0008', 'Ong Tho sweetened condensed milk 380g','07', 'Can', 19000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648189010/Shopping_onl/sua-dac-co-duong-ong-tho-trang-nhan-xanh-lon-380g-201911071524564853_1_mkbxbc.jpg')
-insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0009', 'Vfresh 100% Fruit Juice-Apple 1L','07', 'Pack', 40000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648189098/Shopping_onl/nuoc-tao-ep-vfresh-tba1l-2_0f761e1289b840df9773016a9d9a0679_master_ac5mua.webp')
+insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0009', 'Vfresh 100% Fruit Juice-Apple 1L','07', 'Pack', 40000, 'https://res.cloudinary.com/gia-minh/image/upload/v1649232786/nuoc_ep_oroxta.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0010', 'Glass storage box LocknLock Top Class 2L - Blue','03', 'Box', 471000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648189207/Shopping_onl/JVjoEIfp6XMcc3wBSSwH_simg_de2fe0_500x500_maxb_mkvta6.jpg')
 insert into PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) values('SP0011', 'Sensitive Skin Body Wash','06', 'Bottle', 289000, 'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648697400/Shopping_onl/8e6d2f417e66b1a7ca36696566ac08f0_exqi70.jpg')
 
