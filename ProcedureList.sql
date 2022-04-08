@@ -53,7 +53,6 @@ IF @kq = 0
 	PRINT N'Mã đơn hàng hoặc mã sản phẩm không tồn tại'
 ELSE
 	PRINT N'Số lượng sản phẩm có trong đơn hàng: ' + CAST(@solg as nvarchar(5))
-
 ---------------------------------------------------
 -- Get Product By PartnerID
 DROP PROC pr_getProductByPartner
@@ -61,9 +60,33 @@ CREATE PROC pr_getProductByPartner
 	@madt char(6)
 AS
 BEGIN
-	SELECT BR.BranchID, P.ProductID, P.ProductName, ST.Quantity, P.Price
-	FROM (BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID 
+	SELECT BR.BranchID, P.ProductID, P.ProductName, PT.ProdTypeName, ST.Quantity, P.Price, P.Unit
+	FROM ((BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID) LEFT JOIN PRODUCT_TYPE PT ON P.ProdTypeID = PT.ProdTypeID
 	WHERE BR.PartnerID = @madt
+END
+EXEC pr_getProductByPartner 'DT0004'
+---------------------------------------------------
+-- Update Product
+DROP PROC pr_ProductUpd
+CREATE PROC pr_ProductUpd
+	@macn char(6),
+	@masp char(6),
+	@tensp varchar(100),
+	@tonkho int,
+	@gia int
+AS
+BEGIN
+	BEGIN TRY
+	BEGIN TRANSACTION
+		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho -
+			(SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) 
+			WHERE ProductID = @masp
+		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
+	COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0 ROLLBACK TRAN; 
+	END CATCH
 END
 ---------------------------------------------------
 --Thêm mới sản phẩm
@@ -111,40 +134,17 @@ END
 EXEC pr_OrderConfirmation 'DH0009','KH0005',15000,1
 
 ---------------------------------------------------
--- Get Product By PartnerID
-DROP PROC pr_getProductByPartner
-CREATE PROC pr_getProductByPartner
-	@madt char(6)
-AS
-BEGIN
-	SELECT BR.BranchID, P.ProductID, P.ProductName, PT.ProdTypeName, ST.Quantity, P.Price, P.Unit
-	FROM ((BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID) LEFT JOIN PRODUCT_TYPE PT ON P.ProdTypeID = PT.ProdTypeID
-	WHERE BR.PartnerID = @madt
-END
-EXEC pr_getProductByPartner 'DT0004'
----------------------------------------------------
--- Update Product
-DROP PROC pr_ProductUpd
-CREATE PROC pr_ProductUpd
-	@macn char(6),
+-- Add Receipt Detail
+DROP PROC pr_addRDetail
+CREATE PROC pr_addRDetail
+	@madh char(6),
 	@masp char(6),
-	@tensp varchar(100),
-	@tonkho int,
-	@gia int
+	@solg int
 AS
 BEGIN
-	BEGIN TRY
-	BEGIN TRANSACTION
-		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho -
-			(SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) 
-			WHERE ProductID = @masp
-		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
-	COMMIT TRANSACTION
-	END TRY
-	BEGIN CATCH
-	IF @@TRANCOUNT > 0 ROLLBACK TRAN; 
-	END CATCH
+	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
+EXEC pr_addRDetail 'DH0009', 'SP0002', 1
 ---------------------------------------------------
 -- Take delivery
 DROP PROC pr_TakeDelivery
