@@ -111,35 +111,40 @@ END
 EXEC pr_OrderConfirmation 'DH0009','KH0005',15000,1
 
 ---------------------------------------------------
--- Add Receipt Detail
-DROP PROC pr_addRDetail
-CREATE PROC pr_addRDetail
-	@madh char(6),
-	@masp char(6),
-	@solg int
+-- Get Product By PartnerID
+DROP PROC pr_getProductByPartner
+CREATE PROC pr_getProductByPartner
+	@madt char(6)
 AS
 BEGIN
-	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
+	SELECT BR.BranchID, P.ProductID, P.ProductName, PT.ProdTypeName, ST.Quantity, P.Price, P.Unit
+	FROM ((BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID) LEFT JOIN PRODUCT_TYPE PT ON P.ProdTypeID = PT.ProdTypeID
+	WHERE BR.PartnerID = @madt
 END
-EXEC pr_addRDetail 'DH0009', 'SP0002', 1
-
+EXEC pr_getProductByPartner 'DT0004'
 ---------------------------------------------------
--- Update Inventory
-DROP PROC pr_InventoryUpd_UPD
-CREATE PROC pr_InventoryUpd_UPD
+-- Update Product
+DROP PROC pr_ProductUpd
+CREATE PROC pr_ProductUpd
 	@macn char(6),
 	@masp char(6),
-	@tonkho int
+	@tensp varchar(100),
+	@tonkho int,
+	@gia int
 AS
 BEGIN
+	BEGIN TRY
 	BEGIN TRANSACTION
-		UPDATE PRODUCT SET NoInventory = NoInventory + @tonkho -
+		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho -
 			(SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) 
 			WHERE ProductID = @masp
 		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
 	COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0 ROLLBACK TRAN; 
+	END CATCH
 END
-EXEC pr_InventoryUpd_UPD 'CN0004', 'SP0002', 94
 ---------------------------------------------------
 -- Take delivery
 DROP PROC pr_TakeDelivery
@@ -190,19 +195,3 @@ EXEC @kq = pr_CancelDelivery 'DH0001'
 if @kq = 0
 	PRINT 'Can not Cancel delivery'
 
-BEGIN TRAN
-SELECT * FROM RECEIPT WHERE ReceiptStatus = 1
-
-DECLARE @kq tinyint
-EXEC @kq = pr_TakeDelivery 'DH0002', 'TX0004'
-if @kq = 0
-	PRINT 'Can not take delivery'
-
-SELECT * FROM RECEIPT WHERE ReceiptStatus = 1
-COMMIT TRAN
-
-BEGIN TRAN
-
-
-SELECT * FROM DELIVERY_NOTE
-	
