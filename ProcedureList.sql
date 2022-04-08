@@ -4,7 +4,7 @@ GO
 --STORE PROCEDURE & TRANSACTION
 
 ---------------------------------------------------
---Truyen vao MaGiao, xuat ra tong tien cua phieu giao
+--Total
 DROP PROC pr_Total
 
 CREATE PROC	pr_Total
@@ -12,47 +12,23 @@ CREATE PROC	pr_Total
 	@tongtien int OUTPUT
 AS
 BEGIN
-	IF NOT EXISTS( SELECT * FROM DELIVERY_DETAIL WHERE DeliveryID = @mapg )
+	IF NOT EXISTS( SELECT * FROM RECEIPT_DETAIL WHERE ReceiptID = @mapg )
 		RETURN 0
 	SELECT @tongtien = (SUM(DD.Quantity * DD.Price) + DN.DeliveryCharges)
-	FROM DELIVERY_DETAIL DD JOIN DELIVERY_NOTE DN ON DD.DeliveryID = DN.DeliveryID
-	WHERE DN.DeliveryID = @mapg
+	FROM RECEIPT_DETAIL DD JOIN RECEIPT DN ON DD.ReceiptID = DN.ReceiptID
+	WHERE DN.ReceiptID = @mapg
 	GROUP BY DN.DeliveryCharges
 	RETURN 1
 END
 
 DECLARE @tt int 
 DECLARE @kq tinyint
-EXEC @kq = pr_Total 'PG0003', @tt OUTPUT
+EXEC @kq = pr_Total 'DH0003', @tt OUTPUT
 IF @kq = 0
 	PRINT N'Mã phiếu giao không tồn tại'
 ELSE
 	PRINT N'Tổng tiền: ' + CAST(@tt as nvarchar(20))
 
----------------------------------------------------
---Truyền vào MaDH và MaHH, xuất ra số lượng
-DROP PROC pr_QuantityProd
-CREATE PROC pr_QuantityProd
-	@madh char(6), 
-	@masp char(6), 
-	@soluong int OUTPUT
-AS
-BEGIN
-	IF NOT EXISTS(SELECT * FROM RECEIPT WHERE ReceiptID = @madh)
-		RETURN 0;
-	SELECT @soluong=Quantity FROM RECEIPT_DETAIL WHERE ReceiptID = @madh AND ProductID = @masp
-	IF @soluong IS NULL
-		RETURN 0;
-	RETURN 1;
-END
-
-DECLARE @solg int 
-DECLARE @kq tinyint
-EXEC @kq = pr_QuantityProd 'DH0001', 'SP0010', @solg OUTPUT
-IF @kq = 0
-	PRINT N'Mã đơn hàng hoặc mã sản phẩm không tồn tại'
-ELSE
-	PRINT N'Số lượng sản phẩm có trong đơn hàng: ' + CAST(@solg as nvarchar(5))
 ---------------------------------------------------
 -- Get Product By PartnerID
 DROP PROC pr_getProductByPartner
@@ -85,11 +61,14 @@ BEGIN
 	COMMIT TRANSACTION
 	END TRY
 	BEGIN CATCH
+	DECLARE @ErrorNumber INT = ERROR_NUMBER();
+	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
+	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
 	IF @@TRANCOUNT > 0 ROLLBACK TRAN; 
 	END CATCH
 END
 ---------------------------------------------------
---Thêm mới sản phẩm
+-- Add new products to branch
 DROP PROC pr_InsProd
 CREATE PROC pr_InsProd
 	@masp char(6), 
@@ -97,27 +76,26 @@ CREATE PROC pr_InsProd
 	@malsp char(6),
 	@donvi varchar(15),
 	@dongia int, 
-	@img image
+	@img varchar(200),
+	@macn char(6),
+	@solg int
 AS
 BEGIN
-	IF EXISTS(SELECT * FROM PRODUCT WHERE ProductID = @masp OR ProductName = @tensp)
-		RETURN 0;
-	INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID, Unit, Price, Img) VALUES(@masp, @tensp, @malsp, @donvi, @dongia, @img)
-	RETURN 1;
+	IF NOT EXISTS(SELECT * FROM PRODUCT WHERE ProductID = @masp)
+		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price,Img) VALUES(@masp, @tensp, @malsp, @donvi, @dongia,@img)
+	INSERT INTO STORAGE VALUES(@macn,@masp,@solg)	
 END 
 
-DECLARE @kq tinyint
-EXEC @kq = pr_InsProd
+EXEC pr_InsProd
 	'SP0012', 
-	'Southern Star Sweetened Condensed Creamer 380g', 
-	'08', 
+	'Southern Star Condensed Creamer', 
+	'07', 
 	'Can', 
 	17000, 
-	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg'
-IF @kq = 0
-	PRINT N'Không thể thêm sản phẩm';
-ELSE
-	PRINT N'Thêm thành công';
+	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg',
+	'CN0007',20
+
+SELECT * FROM PRODUCT WHERE Price < 50000
 ---------------------------------------------------
 -- Order confirmation
 DROP PROC pr_OrderConfirmation
@@ -163,6 +141,9 @@ BEGIN
 		RETURN 1;
 	END TRY
 	BEGIN CATCH
+		DECLARE @ErrorNumber INT = ERROR_NUMBER();
+		DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
+		RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
 		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; 
 		RETURN 0;
 	END CATCH
