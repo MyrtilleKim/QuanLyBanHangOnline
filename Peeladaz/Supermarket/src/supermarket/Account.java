@@ -349,10 +349,10 @@ private static java.sql.ResultSet Rss;
 
     private void AccountsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AccountsTableMouseClicked
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel)AccountsTable.getModel ();
+        DefaultTableModel model = (DefaultTableModel)AccountsTable.getModel();
         int Myindex = AccountsTable.getSelectedRow();
-        emailVar.setText (model.getValueAt (Myindex, 0).toString());
-        passVar.setText (model.getValueAt (Myindex, 1).toString());
+        emailVar.setText(model.getValueAt(Myindex, 0).toString());
+        passVar.setText(model.getValueAt(Myindex, 1).toString());
     }//GEN-LAST:event_AccountsTableMouseClicked
 
     private void ClearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearBtnActionPerformed
