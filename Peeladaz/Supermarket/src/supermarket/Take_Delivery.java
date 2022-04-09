@@ -308,13 +308,12 @@ public class Take_Delivery extends javax.swing.JFrame {
     }
     
     public void SelectDelivery() {
+        Con = JDBCConnection.getConnection("sa", "123456");
+        String sql = "pr_getProductByPartner ?";
         try{
-            Con = JDBCConnection.getConnection("sa", "123456");
-            St = (Statement) Con.createStatement();
-            String shipper = "TX0001";
-            Rs = St.executeQuery("select * from Delivery_Note where ShipperID = 'TX0001'");
-//            add.setString(1, shipper);
-//            add.execute();
+            Ps = Con.prepareStatement(sql);
+            Ps.setString(1,"TX0001");
+            Rs = Ps.executeQuery();
             deliveryTable.setModel(DbUtils.resultSetToTableModel(Rs));
         } catch (Exception e){
             e.printStackTrace();

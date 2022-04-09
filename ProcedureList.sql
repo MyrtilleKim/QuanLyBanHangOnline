@@ -34,7 +34,7 @@ DROP PROC pr_getReceipt
 CREATE PROC pr_getReceipt
 AS
 BEGIN
-	SELECT R.ReceiptID, C.CustomerName, (C.Addr + ', ' + C.District + ', ' + C.City), R.OrderDate, R.DeliveryCharges 
+	SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges 
 	FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
 	WHERE ReceiptStatus = 1
 END
@@ -46,9 +46,9 @@ CREATE PROC pr_getDeliveryNote
 	@matx char(6)
 AS
 BEGIN
-	SELECT R.ReceiptID, C.CustomerName, (C.Addr + C.District + C.City) AS DeliveryAddress, DN.DeliveryDate, R.DeliveryCharges, R.ReceiptStatus
+	SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, DN.DeliveryDate, R.DeliveryCharges, R.ReceiptStatus
 	FROM DELIVERY_NOTE DN LEFT JOIN RECEIPT R ON DN.ReceiptID = R.ReceiptID LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
-	WHERE ShipperID = 'TX0001'
+	WHERE ShipperID = @matx
 END
 ---------------------------------------------------
 -- Get Product By PartnerID

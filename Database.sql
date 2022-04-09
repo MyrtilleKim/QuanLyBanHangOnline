@@ -76,7 +76,6 @@ CREATE TABLE SHIPPER
 	Email varchar(30) NOT NULL,
 	Addr varchar(50),
 	District varchar(30),
-	City varchar(30),
 	NoID varchar(12),
 	NoPlate varchar(15),
 	NoAcc varchar(20)
@@ -93,7 +92,6 @@ CREATE TABLE CUSTOMER
 	Email varchar(30) NOT NULL,
 	Addr varchar(50),
 	District varchar(30),
-	City varchar(30),
 )
 
 ---------------------------------------------------
@@ -121,6 +119,8 @@ CREATE TABLE PARTNERS
 	PartnerID char(6) NOT NULL PRIMARY KEY,
 	PartnerName varchar(30),
 	Representative varchar(30),
+	Addr varchar(50),
+	District varchar(30),
 	Tele varchar(15),
 	Email varchar(30) NOT NULL,
 	NoBranch int,
@@ -135,7 +135,6 @@ CREATE TABLE BRANCH
 	PartnerID char(6) NOT NULL,
 	Addr varchar(50),
 	District varchar(30),
-	City varchar(30)
 )
 
 ---------------------------------------------------
@@ -468,33 +467,33 @@ insert into ADMINS values('AD0001','Pham Thua Thua', 'ptthua@gmail.com')
 insert into ADMINS values('AD0002', 'Tieu Quy', 'tquy@gmail.com')
 
 -- CUSTOMER
-insert into CUSTOMER values('KH0001', 'Nguyen Van A','0123456789', 'nva@gmail.com', '731 Tran Hung Đao Street', 'District 5', 'HCMc')
-insert into CUSTOMER values('KH0002', 'Tran Ngoc Han', '0123456789', 'tnhan@gmail.com', '23/5 Nguyen Trai Street', 'District 5', 'HCMc')
-insert into CUSTOMER values('KH0004', 'Tran Minh Long', '0123456789', 'tmlong@gmail.com', '50/34 Le Đai Hanh Street', 'District 10', 'HCMc')
-insert into CUSTOMER values('KH0005', 'Pham Van Vinh', '0123456789', 'pvvinh@gmail.com', '45 Trung Vuong Street', 'Sơn Tây District', 'Hanoi')
-insert into CUSTOMER values('KH0006', 'Le Nhat Minh', '0123456789', 'lnminh@gmail.com', '34 Truong Dinh Street', 'District 3', 'HCMc')
+insert into CUSTOMER values('KH0001', 'Nguyen Van A','0123456789', 'nva@gmail.com', '731 Tran Hung Đao Street', 'District 5')
+insert into CUSTOMER values('KH0002', 'Tran Ngoc Han', '0123456789', 'tnhan@gmail.com', '23/5 Nguyen Trai Street', 'District 5')
+insert into CUSTOMER values('KH0004', 'Tran Minh Long', '0123456789', 'tmlong@gmail.com', '50/34 Le Đai Hanh Street', 'District 10')
+insert into CUSTOMER values('KH0005', 'Pham Van Vinh', '0123456789', 'pvvinh@gmail.com', '45 Trung Vuong Street', 'District 1')
+insert into CUSTOMER values('KH0006', 'Le Nhat Minh', '0123456789', 'lnminh@gmail.com', '34 Truong Dinh Street', 'District 3')
 
 -- PARTNERS
-insert into PARTNERS values('DT0001', 'Thien Long', 'Tran Ngoc Linh','0123456789', 'tnlinh@gmail.com', NULL, '3500806643')
-insert into PARTNERS values('DT0002', 'Campus', 'Ha Duy Lap','0123456789', 'hdlap@gmail.com', NULL, '0102859048')
-insert into PARTNERS values('DT0003', 'Lock&Lock', 'Tran Hong Quang','0123456789', 'thquang@gmail.com', NULL, '03202869022')
-insert into PARTNERS values('DT0004', 'Vinamilk', 'Tran Lap Nong','0123456789', 'tlnong@gmail.com', NULL, '04523869022')
-insert into PARTNERS values('DT0005', 'LG Electronics', 'Lam Ngan Tuan','0123456789', 'lntuan@gmail.com', NULL, '03205678122')
-insert into PARTNERS values('DT0006', 'Unilever', 'Ba Vien','0123456789', 'bvien@gmail.com', NULL, '03212348128')
+insert into PARTNERS values('DT0001', 'Thien Long', 'Tran Ngoc Linh','123 Le Van Sy','Phu Nhuan District','0123456789', 'tnlinh@gmail.com', NULL, '3500806643')
+insert into PARTNERS values('DT0002', 'Campus', 'Ha Duy Lap','875/52 Tran Van Dang','Tan Phu District','0123456789', 'hdlap@gmail.com', NULL, '0102859048')
+insert into PARTNERS values('DT0003', 'Lock&Lock', 'Tran Hong Quang','23/745 Nguyen Van Troi','Binh Tan District','0123456789', 'thquang@gmail.com', NULL, '03202869022')
+insert into PARTNERS values('DT0004', 'Vinamilk', 'Tran Lap Nong','54 Binh Tri Dong A','Binh Tan District','0123456789', 'tlnong@gmail.com', NULL, '04523869022')
+insert into PARTNERS values('DT0005', 'LG Electronics', 'Lam Ngan Tuan','532 CMT8','District 10','0123456789', 'lntuan@gmail.com', NULL, '03205678122')
+insert into PARTNERS values('DT0006', 'Unilever', 'Ba Vien','846 Phan Van Tri','District 6','0123456789', 'bvien@gmail.com', NULL, '03212348128')
 
 -- BRANCH
-insert into BRANCH values('CN0001','DT0001','27 Le Van Quoi Street', 'Binh Tan District', 'HCMc')
-insert into BRANCH values('CN0002','DT0001','87 Phan Van Tri Street', 'Go Vap District', 'HCMc')
-insert into BRANCH values('CN0003','DT0001','275 CMT8 Street', 'District 10', 'HCMc')
-insert into BRANCH values('CN0004','DT0005','57 Hoa Hung Street', 'District 10', 'HCMc')
-insert into BRANCH values('CN0005','DT0006','332 Nguyen Thai Hoc Street', 'District 1', 'HCMc')
-insert into BRANCH values('CN0006','DT0004','153 Xo Viet Nghe Tinh Street', 'Binh Thanh District', 'HCMc')
-insert into BRANCH values('CN0007','DT0004','12 Street 3/2', 'District 10', 'HCMc')
-insert into BRANCH values('CN0008','DT0004','283 Nguyen Thuong Hien Street', 'District 10', 'HCMc')
-insert into BRANCH values('CN0009','DT0004','857 Le Hong Phong Street', 'District 5', 'HCMc')
-insert into BRANCH values('CN0010','DT0003','51 Vo Thi Sau Street', 'Tan Binh District', 'HCMc')
-insert into BRANCH values('CN0011','DT0002','454 Tan Ki Tan Quy Street', 'Binh Chanh District', 'HCMc')
-insert into BRANCH values('CN0012','DT0002','87 Bach Dang Street', 'District 1', 'HCMc')
+insert into BRANCH values('CN0001','DT0001','27 Le Van Quoi Street', 'Binh Tan District')
+insert into BRANCH values('CN0002','DT0001','87 Phan Van Tri Street', 'Go Vap District')
+insert into BRANCH values('CN0003','DT0001','275 CMT8 Street', 'District 10')
+insert into BRANCH values('CN0004','DT0005','57 Hoa Hung Street', 'District 10')
+insert into BRANCH values('CN0005','DT0006','332 Nguyen Thai Hoc Street', 'District 1')
+insert into BRANCH values('CN0006','DT0004','153 Xo Viet Nghe Tinh Street', 'Binh Thanh District')
+insert into BRANCH values('CN0007','DT0004','12 Street 3/2', 'District 10')
+insert into BRANCH values('CN0008','DT0004','283 Nguyen Thuong Hien Street', 'District 10')
+insert into BRANCH values('CN0009','DT0004','857 Le Hong Phong Street', 'District 5')
+insert into BRANCH values('CN0010','DT0003','51 Vo Thi Sau Street', 'Tan Binh District')
+insert into BRANCH values('CN0011','DT0002','454 Tan Ki Tan Quy Street', 'Binh Chanh District')
+insert into BRANCH values('CN0012','DT0002','87 Bach Dang Street', 'District 1')
 
 -- STAFF
 insert into STAFF values('NV0001','Nguyen Nhu Nhat','nnnhut@gmail.com')
@@ -504,11 +503,11 @@ insert into STAFF values('NV0004','Ngo Thanh Tuan','nttuan@gmail.com')
 insert into STAFF values('NV0005','Nguyen Thi Truc Thanh','nttthanh@gmail.com')
 
 -- SHIPPER
-insert into SHIPPER values('TX0001', 'Vuong Tu Di','0123456789', 'vtudi@gmail.com', '45 Nguyen Canh Chan Street', 'District 1', 'HCMc', '350080664','64-V1521.87','9706410034567890')
-insert into SHIPPER values('TX0003', 'Vuu Truong Tinh','0123456789', 'vttinh@gmail.com', '873 Le Hong Phong Street', 'District 5', 'HCMc', '010285904','64-V1523.69','1234567812345678')
-insert into SHIPPER values('TX0004', 'Thai Tu Khon','0123456789', 'ttkhon@gmail.com', '27/53 Street 3/2', 'District 10', 'HCMc', '0320286902','36-Z1582.54','1078668165705213')
-insert into SHIPPER values('TX0005', 'Hoang Minh Hao','0123456789', 'hmhao@gmail.com', '227 Nguyen Van Cu Street', 'District 5', 'HCMc', '0320286902','51-A1756.59','3564803412341234')
-insert into SHIPPER values('TX0006', 'Chu Chinh Đinh','0123456789', 'ccdinh@gmail.com', '45/2 An Duong Vuong Street', 'District 5', 'HCMc', '0320286902','59-Z1316.69','4000123456789010')
+insert into SHIPPER values('TX0001', 'Vuong Tu Di','0123456789', 'vtudi@gmail.com', '45 Nguyen Canh Chan Street', 'District 1', '350080664','64-V1521.87','9706410034567890')
+insert into SHIPPER values('TX0003', 'Vuu Truong Tinh','0123456789', 'vttinh@gmail.com', '873 Le Hong Phong Street', 'District 5', '010285904','64-V1523.69','1234567812345678')
+insert into SHIPPER values('TX0004', 'Thai Tu Khon','0123456789', 'ttkhon@gmail.com', '27/53 Street 3/2', 'District 10', '0320286902','36-Z1582.54','1078668165705213')
+insert into SHIPPER values('TX0005', 'Hoang Minh Hao','0123456789', 'hmhao@gmail.com', '227 Nguyen Van Cu Street', 'District 5', '0320286902','51-A1756.59','3564803412341234')
+insert into SHIPPER values('TX0006', 'Chu Chinh Đinh','0123456789', 'ccdinh@gmail.com', '45/2 An Duong Vuong Street', 'District 5', '0320286902','59-Z1316.69','4000123456789010')
 
 -- PRODUCT_TYPE
 insert into PRODUCT_TYPE values('01', 'Stationery')
