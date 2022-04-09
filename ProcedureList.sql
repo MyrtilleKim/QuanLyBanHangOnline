@@ -28,7 +28,28 @@ IF @kq = 0
 	PRINT N'Mã phiếu giao không tồn tại'
 ELSE
 	PRINT N'Tổng tiền: ' + CAST(@tt as nvarchar(20))
-
+---------------------------------------------------
+--Get receipt 
+DROP PROC pr_getReceipt
+CREATE PROC pr_getReceipt
+AS
+BEGIN
+	SELECT R.ReceiptID, C.CustomerName, (C.Addr + ', ' + C.District + ', ' + C.City), R.OrderDate, R.DeliveryCharges 
+	FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
+	WHERE ReceiptStatus = 1
+END
+EXEC pr_getReceipt
+---------------------------------------------------
+-- Get Delivery note
+DROP PROC pr_getDeliveryNote
+CREATE PROC pr_getDeliveryNote
+	@matx char(6)
+AS
+BEGIN
+	SELECT R.ReceiptID, C.CustomerName, (C.Addr + C.District + C.City) AS DeliveryAddress, DN.DeliveryDate, R.DeliveryCharges, R.ReceiptStatus
+	FROM DELIVERY_NOTE DN LEFT JOIN RECEIPT R ON DN.ReceiptID = R.ReceiptID LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
+	WHERE ShipperID = 'TX0001'
+END
 ---------------------------------------------------
 -- Get Product By PartnerID
 DROP PROC pr_getProductByPartner

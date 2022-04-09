@@ -28,6 +28,7 @@ public class Take_Delivery extends javax.swing.JFrame {
     }
     
     Connection Con = null;
+    PreparedStatement Ps = null;
     Statement St = null;
     ResultSet Rs = null;
 
@@ -63,13 +64,13 @@ public class Take_Delivery extends javax.swing.JFrame {
 
         receiptTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Receipt ID", "Customer ID", "Order Date", "Receipt Status"
+                "Receipt ID", "Customer ", "Address", "Order Date", "Delivery Charges"
             }
         ));
         jScrollPane1.setViewportView(receiptTable);
@@ -295,10 +296,11 @@ public class Take_Delivery extends javax.swing.JFrame {
     }//GEN-LAST:event_confirmBtnMouseClicked
     
     public void SelectReceipt() {
+        Con = JDBCConnection.getConnection("sa", "123456");
+        String sql = "EXEC pr_getReceipt";
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
-            St = (Statement) Con.createStatement();
-            Rs = St.executeQuery("select * from dbo.RECEIPT where ReceiptStatus = 1");
+            Ps = Con.prepareStatement(sql);
+            Rs = Ps.executeQuery();
             receiptTable.setModel(DbUtils.resultSetToTableModel(Rs));
         } catch (Exception e){
             e.printStackTrace();
@@ -307,7 +309,7 @@ public class Take_Delivery extends javax.swing.JFrame {
     
     public void SelectDelivery() {
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
+            Con = JDBCConnection.getConnection("sa", "123456");
             St = (Statement) Con.createStatement();
             String shipper = "TX0001";
             Rs = St.executeQuery("select * from Delivery_Note where ShipperID = 'TX0001'");

@@ -560,7 +560,7 @@ int i = 0;
         // TODO add your handling code here:
         String typeTemp = null;
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
+            Con = JDBCConnection.getConnection("sa", "123456");
             St = (Statement) Con.createStatement();
             
             if (fillterBox.getSelectedItem() == "Stationery"){
@@ -650,7 +650,7 @@ int i = 0;
     }//GEN-LAST:event_clearBillBtnMouseClicked
     public void UpdateQTY(){
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
+            JDBCConnection.getConnection("sa", "123456");
             PreparedStatement add = Con.prepareStatement("UPDATE PRODUCT SET NoInventory = ? WHERE ProductName = ?");
             
             add.setString(1, afQTY);
@@ -666,7 +666,7 @@ int i = 0;
     }
     public void SelectProduct() {
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
+            Con = JDBCConnection.getConnection("sa", "123456");
             St = (Statement) Con.createStatement();
             Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT Order by Price ASC");
             BillTable.setModel(DbUtils.resultSetToTableModel(Rs));
