@@ -9,7 +9,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
 /**
@@ -49,8 +51,11 @@ public class Take_Delivery extends javax.swing.JFrame {
         deliveryTable = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
         fillterBox = new javax.swing.JComboBox<>();
-        RefreshBtn = new javax.swing.JButton();
         confirmBtn = new javax.swing.JButton();
+        RefreshBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        returnBtn = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -73,6 +78,11 @@ public class Take_Delivery extends javax.swing.JFrame {
                 "Receipt ID", "Customer ", "Address", "Order Date", "Delivery Charges"
             }
         ));
+        receiptTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                receiptTableMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(receiptTable);
 
         deliveryTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -94,10 +104,19 @@ public class Take_Delivery extends javax.swing.JFrame {
 
         fillterBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         fillterBox.setForeground(new java.awt.Color(153, 153, 255));
-        fillterBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "District 1", "District 2", "District 3", "District 4", "District 5", "District 6", "District 7", "District 8", "District 9", "District 10", "District 11", "District 12", "District Binh Tan", "District Binh Thanh", "District Go Vap", "District Phu Nhuan", "District Tan Binh", "District Tan Phu" }));
+        fillterBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "District 1", "District 2", "District 3", "District 4", "District 5", "District 6", "District 7", "District 8", "District 9", "District 10", "District 11", "District 12", "District Binh Tan", "District Binh Thanh", "District Go Vap", "District Phu Nhuan", "District Tan Binh", "District Tan Phu", "ALL" }));
         fillterBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fillterBoxActionPerformed(evt);
+            }
+        });
+
+        confirmBtn.setBackground(new java.awt.Color(0, 255, 51));
+        confirmBtn.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        confirmBtn.setText("Confirm Delivery");
+        confirmBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                confirmBtnMouseClicked(evt);
             }
         });
 
@@ -113,12 +132,27 @@ public class Take_Delivery extends javax.swing.JFrame {
             }
         });
 
-        confirmBtn.setBackground(new java.awt.Color(0, 255, 51));
-        confirmBtn.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        confirmBtn.setText("Confirm Delivery");
-        confirmBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(153, 153, 255));
+        jLabel2.setText("Delivery Notes");
+
+        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(153, 153, 255));
+        jLabel3.setText("Notes can be recieved");
+
+        returnBtn.setBackground(new java.awt.Color(255, 51, 51));
+        returnBtn.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        returnBtn.setText("Return Delivery");
+        returnBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                confirmBtnMouseClicked(evt);
+                returnBtnMouseClicked(evt);
+            }
+        });
+        returnBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                returnBtnActionPerformed(evt);
             }
         });
 
@@ -127,37 +161,58 @@ public class Take_Delivery extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 81, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 747, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(RefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 81, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 752, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 747, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(67, 67, 67))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(206, 206, 206)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(RefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(283, 283, 283))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(returnBtn)
+                        .addGap(383, 383, 383))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(confirmBtn)
-                .addGap(384, 384, 384))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(238, 238, 238))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(confirmBtn)
+                        .addGap(370, 370, 370))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(63, 63, 63)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(returnBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(RefreshBtn))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(confirmBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -191,9 +246,9 @@ public class Take_Delivery extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addComponent(jLabel5)
-                .addGap(406, 406, 406)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(207, 207, 207)
                 .addComponent(jLabel9)
                 .addGap(23, 23, 23))
         );
@@ -202,10 +257,10 @@ public class Take_Delivery extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
+                    .addComponent(jLabel9)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel9))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(26, 26, 26))
@@ -235,68 +290,103 @@ public class Take_Delivery extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_fillterBoxActionPerformed
 
+    private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
+        // TODO add your handling code here:
+        int input = JOptionPane.showConfirmDialog(null,"Do you want to reverse !!!", "Reverse", JOptionPane.YES_NO_OPTION);
+        // 0=yes, 1=no
+    }//GEN-LAST:event_confirmBtnMouseClicked
+
     private void RefreshBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RefreshBtnMouseClicked
         // TODO add your handling code here:
-//        String typeTemp = null;
-//        try{
-//            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
-//            St = (Statement) Con.createStatement();
-//
-//            if (fillterBox.getSelectedItem() == "Stationery"){
-//                typeTemp = "01";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            } else if (fillterBox.getSelectedItem() == "Electric Appliances"){
-//                typeTemp = "02";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            } else if (fillterBox.getSelectedItem() == "Kitchen Utensils & Appliances"){
-//                typeTemp = "03";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            } else if (fillterBox.getSelectedItem() == "Phone Accessories"){
-//                typeTemp = "04";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            } else if (fillterBox.getSelectedItem() == "Detergents"){
-//                typeTemp = "05";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            } else if (fillterBox.getSelectedItem() == "Beauty & Personal Care"){
-//                typeTemp = "05";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            }else if (fillterBox.getSelectedItem() == "Food"){
-//                typeTemp = "07";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            }else if (fillterBox.getSelectedItem() == "Beverage"){
-//                typeTemp = "08";
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            }else if (fillterBox.getSelectedItem() == "Lower 50k"){
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE Price <" + 50000 + "Order by Price ASC");
-//            }else if (fillterBox.getSelectedItem() == "50k to 500k"){
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE Price >=" + 50000 + " AND Price <="+ 500000 + "Order by Price ASC");
-//            }else if (fillterBox.getSelectedItem() == "Higher 200k"){
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE Price >" + 200000 + "Order by Price ASC");
-//            }else if (fillterBox.getSelectedItem() == "All"){
-//                Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT Order by Price ASC");
-//            }
-//            //            Rs = St.executeQuery("select ProductName, NoInventory, Price from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-//            BillTable.setModel(DbUtils.resultSetToTableModel(Rs));
-//            BillTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-//            BillTable.setRowHeight(25);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
+        String typeTemp = null;
+        try{
+            Con = JDBCConnection.getConnection("kubi", "28112001");
+            St = (Statement) Con.createStatement();
+
+            if (fillterBox.getSelectedItem() == "District 1"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 1'");
+            }else if (fillterBox.getSelectedItem() == "District 2"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 2'");
+            }else if (fillterBox.getSelectedItem() == "District 3"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 3'");
+            }else if (fillterBox.getSelectedItem() == "District 4"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 4'");
+            }else if (fillterBox.getSelectedItem() == "District 5"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 5'");
+            }else if (fillterBox.getSelectedItem() == "District 6"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 6'");
+            }else if (fillterBox.getSelectedItem() == "District 7"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 7'");
+            }else if (fillterBox.getSelectedItem() == "District 8"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 8'");
+            }else if (fillterBox.getSelectedItem() == "District 9"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 9'");
+            }else if (fillterBox.getSelectedItem() == "District 10"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 10'");
+            }else if (fillterBox.getSelectedItem() == "District 11"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 11'");
+            }else if (fillterBox.getSelectedItem() == "District 12"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 12'");
+            }else if (fillterBox.getSelectedItem() == "District Binh Tan"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Binh Tan'");
+            }else if (fillterBox.getSelectedItem() == "District Binh Thanh"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Binh Thanh'");
+            }else if (fillterBox.getSelectedItem() == "District Go Vap"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Go Vap'");
+            }else if (fillterBox.getSelectedItem() == "District Phu Nhuan"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Phu Nhuan'");
+            }else if (fillterBox.getSelectedItem() == "District Tan Binh"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Tan Binh'");
+            }else if (fillterBox.getSelectedItem() == "District Tan Phu"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Tan Phu'");
+            }else if (fillterBox.getSelectedItem() == "ALL"){
+                Rs = St.executeQuery("EXEC pr_getReceipt");
+            }
+            receiptTable.setModel(DbUtils.resultSetToTableModel(Rs));
+//            receiptTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+//            receiptTable.setRowHeight(25);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }//GEN-LAST:event_RefreshBtnMouseClicked
 
     private void RefreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_RefreshBtnActionPerformed
-
-    private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
+    ArrayList<String> numdata = new ArrayList<String>();
+    private void returnBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_returnBtnMouseClicked
         // TODO add your handling code here:
-        int input = JOptionPane.showConfirmDialog(null,"Do you want to reverse !!!", "Reverse", JOptionPane.YES_NO_OPTION);
-        // 0=yes, 1=no
-    }//GEN-LAST:event_confirmBtnMouseClicked
+        for (int count = 0; count < receiptTable.getRowCount(); count++){
+            numdata.add(receiptTable.getValueAt(count, 0).toString());
+            numdata.add(receiptTable.getValueAt(count, 1).toString());
+            numdata.add(receiptTable.getValueAt(count, 2).toString());
+            numdata.add(receiptTable.getValueAt(count, 3).toString());
+            numdata.add(receiptTable.getValueAt(count, 4).toString());
+            numdata.add(receiptTable.getValueAt(count, 5).toString());
+        }
+        
+    }//GEN-LAST:event_returnBtnMouseClicked
+
+    private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_returnBtnActionPerformed
+String ReceiptID, CustomerName, Addr, District, OrderDate, DeliveryChanges;
+//Khi bấm vào dòng nào thì data sẽ được truyền vào những biến trên
+    private void receiptTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_receiptTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel)receiptTable.getModel ();
+        int Myindex = receiptTable.getSelectedRow();
+        ReceiptID = model.getValueAt(Myindex, 0).toString();        
+        CustomerName = model.getValueAt(Myindex, 1).toString();
+        Addr = model.getValueAt(Myindex, 2).toString();
+        District = model.getValueAt(Myindex, 3).toString();
+        OrderDate = model.getValueAt(Myindex, 4).toString();
+        DeliveryChanges = model.getValueAt(Myindex, 5).toString();
+    }//GEN-LAST:event_receiptTableMouseClicked
     
     public void SelectReceipt() {
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection("kubi", "28112001");
         String sql = "EXEC pr_getReceipt";
         try{
             Ps = Con.prepareStatement(sql);
@@ -308,7 +398,7 @@ public class Take_Delivery extends javax.swing.JFrame {
     }
     
     public void SelectDelivery() {
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection("kubi", "28112001");
         String sql = "pr_getProductByPartner ?";
         try{
             Ps = Con.prepareStatement(sql);
@@ -360,6 +450,8 @@ public class Take_Delivery extends javax.swing.JFrame {
     private javax.swing.JTable deliveryTable;
     private javax.swing.JComboBox<String> fillterBox;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel9;
@@ -368,5 +460,6 @@ public class Take_Delivery extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable receiptTable;
+    private javax.swing.JButton returnBtn;
     // End of variables declaration//GEN-END:variables
 }
