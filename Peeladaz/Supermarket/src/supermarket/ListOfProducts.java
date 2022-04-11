@@ -12,15 +12,24 @@ public class ListOfProducts {
     String productName;
     String unit;
     int price;
+    int noProd;
     String img;
 
-    public ListOfProducts(String productName, String unit, int price, String img) {
+    public ListOfProducts(String productName, String unit, int price, int noProd, String img) {
         this.productName = productName;
         this.unit = unit;
         this.price = price;
+        this.noProd = noProd;
         this.img = img;
     }
     
+    public int getNoProd() {
+        return noProd;
+    }
+
+    public void setNoProd(int noProd) {
+        this.noProd = noProd;
+    }
     
 
     public int getPrice() {

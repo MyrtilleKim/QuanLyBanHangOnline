@@ -12,13 +12,27 @@ public class Receipt_Detail {
     String prodId;
     String nameProd;
     int qty;
+    int price;
     
-    public Receipt_Detail(String prodId, String nameProd, int qty) {
+    public Receipt_Detail(String prodId, String nameProd, int price, int qty) {
         this.prodId = prodId;
         this.nameProd = nameProd;
         this.qty = qty;
+        this.price = price;
     }
 
+    Receipt_Detail(Object object, String col1, String col2, String col3) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+    
     public String getProdId() {
         return prodId;
     }

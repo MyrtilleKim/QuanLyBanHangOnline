@@ -29,7 +29,7 @@ public class QueryForProduct {
    
    try {
         st = con.createStatement();
-        rs = st.executeQuery("SELECT ProductName, Unit, Price, Img FROM Product");
+        rs = st.executeQuery("SELECT ProductName, Unit, Price, NoInventory,Img FROM Product");
 
         ListOfProducts p;
         while(rs.next()){
@@ -37,6 +37,7 @@ public class QueryForProduct {
                              rs.getString("ProductName"),
                              rs.getString("Unit"),
                              rs.getInt("Price"),
+                             rs.getInt("NoInventory"),
                              rs.getString("Img")
                      );
         list.add(p);

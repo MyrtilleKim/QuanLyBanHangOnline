@@ -14,14 +14,15 @@ public class Receipt {
     String ReceiptID;
     String CustomerID;
     int DeliveryCharges;
-    int PaymentMethod;
-    ArrayList<Receipt_Detail> list = new ArrayList<Receipt_Detail>();
-    
-    public Receipt(String ReceiptID, String CustomerID, int DeliveryCharges, int PaymentMethod) {
+    boolean PaymentMethod;
+    ArrayList<Receipt_Detail> list;
+
+    public Receipt(String ReceiptID, String CustomerID, int DeliveryCharges, boolean PaymentMethod, ArrayList<Receipt_Detail> list) {
         this.ReceiptID = ReceiptID;
         this.CustomerID = CustomerID;
         this.DeliveryCharges = DeliveryCharges;
         this.PaymentMethod = PaymentMethod;
+        this.list = list;
     }
 
     public String getReceiptID() {
@@ -48,11 +49,11 @@ public class Receipt {
         this.DeliveryCharges = DeliveryCharges;
     }
 
-    public int getPaymentMethod() {
+    public boolean getPaymentMethod() {
         return PaymentMethod;
     }
 
-    public void setPaymentMethod(int PaymentMethod) {
+    public void setPaymentMethod(boolean PaymentMethod) {
         this.PaymentMethod = PaymentMethod;
     }
 

@@ -22,7 +22,7 @@ public class TheModelProduct extends AbstractTableModel{
     }
     
     public Class getColumnClass (int column) {
-        if (column == 4) {
+        if (column == 5) {
             return String.class;
         }
         else{
