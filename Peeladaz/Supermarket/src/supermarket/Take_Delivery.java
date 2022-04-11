@@ -96,6 +96,11 @@ public class Take_Delivery extends javax.swing.JFrame {
                 "Delivery ID", "Receipt ID", "Shipper ID", "Delivery Date", "Delivery Charge"
             }
         ));
+        deliveryTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                deliveryTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(deliveryTable);
 
         jLabel6.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -104,7 +109,7 @@ public class Take_Delivery extends javax.swing.JFrame {
 
         fillterBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         fillterBox.setForeground(new java.awt.Color(153, 153, 255));
-        fillterBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "District 1", "District 2", "District 3", "District 4", "District 5", "District 6", "District 7", "District 8", "District 9", "District 10", "District 11", "District 12", "District Binh Tan", "District Binh Thanh", "District Go Vap", "District Phu Nhuan", "District Tan Binh", "District Tan Phu", "ALL" }));
+        fillterBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {"ALL", "District 1", "District 2", "District 3", "District 4", "District 5", "District 6", "District 7", "District 8", "District 9", "District 10", "District 11", "District 12", " Binh Tan District", "Binh Thanh District", "Go Vap District", "Phu Nhuan District", "Tan Binh District", "Tan Phu District"}));
         fillterBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fillterBoxActionPerformed(evt);
@@ -117,6 +122,11 @@ public class Take_Delivery extends javax.swing.JFrame {
         confirmBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 confirmBtnMouseClicked(evt);
+            }
+        });
+        confirmBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confirmBtnActionPerformed(evt);
             }
         });
 
@@ -292,7 +302,17 @@ public class Take_Delivery extends javax.swing.JFrame {
 
     private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
         // TODO add your handling code here:
-        int input = JOptionPane.showConfirmDialog(null,"Do you want to reverse !!!", "Reverse", JOptionPane.YES_NO_OPTION);
+        Con = JDBCConnection.getConnection("sa", "123456");
+        String sql = "EXEC pr_TakeDelivery ?,?";
+        try{
+            Ps = Con.prepareStatement(sql);
+            Ps.setString(1,ReceiptID);
+            Ps.setString(2,"TX0001");
+            Rs = Ps.executeQuery();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        SelectDelivery();
         // 0=yes, 1=no
     }//GEN-LAST:event_confirmBtnMouseClicked
 
@@ -300,7 +320,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         // TODO add your handling code here:
         String typeTemp = null;
         try{
-            Con = JDBCConnection.getConnection("kubi", "28112001");
+            Con = JDBCConnection.getConnection("sa", "123456");
             St = (Statement) Con.createStatement();
 
             if (fillterBox.getSelectedItem() == "District 1"){
@@ -327,18 +347,18 @@ public class Take_Delivery extends javax.swing.JFrame {
                 Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 11'");
             }else if (fillterBox.getSelectedItem() == "District 12"){
                 Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 12'");
-            }else if (fillterBox.getSelectedItem() == "District Binh Tan"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Binh Tan'");
-            }else if (fillterBox.getSelectedItem() == "District Binh Thanh"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Binh Thanh'");
-            }else if (fillterBox.getSelectedItem() == "District Go Vap"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Go Vap'");
-            }else if (fillterBox.getSelectedItem() == "District Phu Nhuan"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Phu Nhuan'");
-            }else if (fillterBox.getSelectedItem() == "District Tan Binh"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Tan Binh'");
-            }else if (fillterBox.getSelectedItem() == "District Tan Phu"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District Tan Phu'");
+            }else if (fillterBox.getSelectedItem() == "Binh Tan District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Binh Tan District'");
+            }else if (fillterBox.getSelectedItem() == "Binh Thanh District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Binh Thanh District'");
+            }else if (fillterBox.getSelectedItem() == "Go Vap District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Go Vap District'");
+            }else if (fillterBox.getSelectedItem() == "Phu Nhuan District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Phu Nhuan District'");
+            }else if (fillterBox.getSelectedItem() == "Tan Binh District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Tan Binh District'");
+            }else if (fillterBox.getSelectedItem() == "Tan Phu District"){
+                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Tan Phu District'");
             }else if (fillterBox.getSelectedItem() == "ALL"){
                 Rs = St.executeQuery("EXEC pr_getReceipt");
             }
@@ -357,36 +377,44 @@ public class Take_Delivery extends javax.swing.JFrame {
     ArrayList<String> numdata = new ArrayList<String>();
     private void returnBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_returnBtnMouseClicked
         // TODO add your handling code here:
-        for (int count = 0; count < receiptTable.getRowCount(); count++){
-            numdata.add(receiptTable.getValueAt(count, 0).toString());
-            numdata.add(receiptTable.getValueAt(count, 1).toString());
-            numdata.add(receiptTable.getValueAt(count, 2).toString());
-            numdata.add(receiptTable.getValueAt(count, 3).toString());
-            numdata.add(receiptTable.getValueAt(count, 4).toString());
-            numdata.add(receiptTable.getValueAt(count, 5).toString());
+        Con = JDBCConnection.getConnection("sa", "123456");
+        String sql = "EXEC pr_CancelDelivery ?";
+        try{
+            Ps = Con.prepareStatement(sql);
+            Ps.setString(1,ReceiptID1);
+            Rs = Ps.executeQuery();
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        
+        SelectReceipt();     
+        SelectDelivery();
     }//GEN-LAST:event_returnBtnMouseClicked
 
     private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_returnBtnActionPerformed
-String ReceiptID, CustomerName, Addr, District, OrderDate, DeliveryChanges;
+String ReceiptID,ReceiptID1;
 //Khi bấm vào dòng nào thì data sẽ được truyền vào những biến trên
     private void receiptTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_receiptTableMouseClicked
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel)receiptTable.getModel ();
         int Myindex = receiptTable.getSelectedRow();
         ReceiptID = model.getValueAt(Myindex, 0).toString();        
-        CustomerName = model.getValueAt(Myindex, 1).toString();
-        Addr = model.getValueAt(Myindex, 2).toString();
-        District = model.getValueAt(Myindex, 3).toString();
-        OrderDate = model.getValueAt(Myindex, 4).toString();
-        DeliveryChanges = model.getValueAt(Myindex, 5).toString();
     }//GEN-LAST:event_receiptTableMouseClicked
+
+    private void confirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_confirmBtnActionPerformed
+
+    private void deliveryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_deliveryTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel)deliveryTable.getModel ();
+        int Myindex = deliveryTable.getSelectedRow();
+        ReceiptID1 = model.getValueAt(Myindex, 0).toString();        
+    }//GEN-LAST:event_deliveryTableMouseClicked
     
     public void SelectReceipt() {
-        Con = JDBCConnection.getConnection("kubi", "28112001");
+        Con = JDBCConnection.getConnection("sa", "123456");
         String sql = "EXEC pr_getReceipt";
         try{
             Ps = Con.prepareStatement(sql);
@@ -398,8 +426,8 @@ String ReceiptID, CustomerName, Addr, District, OrderDate, DeliveryChanges;
     }
     
     public void SelectDelivery() {
-        Con = JDBCConnection.getConnection("kubi", "28112001");
-        String sql = "pr_getProductByPartner ?";
+        Con = JDBCConnection.getConnection("sa", "123456");
+        String sql = "EXEC pr_getDeliveryNote ?";
         try{
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,"TX0001");

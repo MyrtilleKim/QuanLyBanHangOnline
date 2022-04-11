@@ -552,7 +552,7 @@ insert into STORAGE values('CN0008', 'SP0008', 78)
 insert into STORAGE values('CN0008', 'SP0009', 5)
 insert into STORAGE values('CN0009', 'SP0009', 546)
 insert into STORAGE values('CN0009', 'SP0008', 54)
-SELECT * FROM STORAGE
+
 -- CONTRACTS
 insert into CONTRACTS values('HD0001', 'DT0001','NV0003', 262000000, 180, '13/06/2021',NULL, 4, 10.2)
 insert into CONTRACTS values('HD0002', 'DT0004','NV0005', 780000000, 180, NULL, NULL, 1, 11)
