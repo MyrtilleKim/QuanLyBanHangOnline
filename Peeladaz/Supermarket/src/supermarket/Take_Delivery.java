@@ -309,10 +309,10 @@ public class Take_Delivery extends javax.swing.JFrame {
             Ps.setString(1,ReceiptID);
             Ps.setString(2,"TX0001");
             Rs = Ps.executeQuery();
+            SelectDelivery();
         } catch (Exception e){
             e.printStackTrace();
         }
-        SelectDelivery();
         // 0=yes, 1=no
     }//GEN-LAST:event_confirmBtnMouseClicked
 
@@ -383,11 +383,11 @@ public class Take_Delivery extends javax.swing.JFrame {
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,ReceiptID1);
             Rs = Ps.executeQuery();
+            SelectReceipt();     
+            SelectDelivery();
         } catch (Exception e){
             e.printStackTrace();
         }
-        SelectReceipt();     
-        SelectDelivery();
     }//GEN-LAST:event_returnBtnMouseClicked
 
     private void returnBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_returnBtnActionPerformed

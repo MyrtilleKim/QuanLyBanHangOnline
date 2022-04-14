@@ -23,7 +23,7 @@ public class QueryForProduct {
     public ArrayList<ListOfProducts> BindTable(){
         
     ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
-    Connection con = JDBCConnection.getConnection("kubi", "28112001");
+    Connection con = JDBCConnection.getConnection("sa", "123456");
     Statement st;
     ResultSet rs;
    

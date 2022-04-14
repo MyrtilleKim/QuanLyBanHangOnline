@@ -30,6 +30,7 @@ public class Products extends javax.swing.JFrame {
     
     Connection Con = null;
     Statement St = null;
+    PreparedStatement ps = null;
     ResultSet Rs = null;
 
     /**
@@ -188,17 +189,17 @@ public class Products extends javax.swing.JFrame {
         productTable.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         productTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Name", "Unit", "Price"
+                "BranchID", "ProductID", "Name", "Type", "Quantity", "Price", "Unit"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, true, true
+                true, false, false, false, false, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -206,7 +207,6 @@ public class Products extends javax.swing.JFrame {
             }
         });
         productTable.setGridColor(new java.awt.Color(51, 51, 255));
-        productTable.setIntercellSpacing(new java.awt.Dimension(0, 0));
         productTable.setRowHeight(25);
         productTable.setSelectionBackground(new java.awt.Color(153, 153, 255));
         productTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -246,6 +246,11 @@ public class Products extends javax.swing.JFrame {
 
         typeVar.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         typeVar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Stationery", "Electric Appliances", "Kitchen Utensils & Appliances", "Phone Accessories", "Detergents", "Beauty & Personal Care", "Food", "Beverage" }));
+        typeVar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                typeVarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -266,7 +271,7 @@ public class Products extends javax.swing.JFrame {
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(nameVar1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -296,7 +301,7 @@ public class Products extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addGap(18, 18, 18)
                         .addComponent(typeVar, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 61, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -337,15 +342,15 @@ public class Products extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(quanVar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(nameVar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(priceVar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel10)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addComponent(jLabel10))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(nameVar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(typeVar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -358,8 +363,8 @@ public class Products extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
         );
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
@@ -376,22 +381,22 @@ public class Products extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(134, Short.MAX_VALUE)
+                .addContainerGap(140, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26))))
+                        .addGap(20, 20, 20))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -404,7 +409,9 @@ public class Products extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -448,35 +455,23 @@ public class Products extends javax.swing.JFrame {
         if(branchIDVar.getText().isEmpty() || productIDVar.getText().isEmpty() || unitVar.getText().isEmpty() || quanVar.getText().isEmpty() || nameVar1.getText().isEmpty() || priceVar1.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Missing infomation !!!");
         } else {
+            Con = JDBCConnection.getConnection("sa", "123456");
+            String sql = "EXEC pr_ProductUpd ?,?,?,?,?;";
             try{
-                Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
-                PreparedStatement add = Con.prepareStatement(""
-                        + "UPDATE SET BR.BranchID = ?, P.ProductID = ?, P.ProductName = ?, PT.ProdTypeName = ?, ST.Quantity = ?, P.Price = ?, P.Unit = ? "
-                        + "FROM ((BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID) LEFT JOIN PRODUCT_TYPE PT ON P.ProdTypeID = PT.ProdTypeID "
-                        + "WHERE BR.PartnerID = ? ");
-             
-                
-                
-                add.setString(1, branchIDVar.getText());               
-                add.setString(2, productIDVar.getText());
-                add.setString(3, nameVar1.getText());
-                add.setString(4, typeVar.getSelectedItem().toString());
-                add.setInt(5, Integer.valueOf(quanVar.getText()));
-                add.setInt(6, Integer.valueOf(priceVar1.getText()));
-                add.setString(7, unitVar.getText());
-                
-//                String partner = 'DT0004';
-                add.setString(8,"DT0004");
-                
-                add.executeUpdate();
-                SelectProduct();
-                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");
-            }catch(SQLException e){
+                ps = Con.prepareStatement(sql);
+                ps.setString(1, branchIDVar.getText());   
+                ps.setString(2, productIDVar.getText());
+                ps.setString(3, nameVar1.getText());
+                ps.setInt(4, Integer.valueOf(quanVar.getText()));
+                ps.setInt(5, Integer.valueOf(priceVar1.getText()));
+                ps.execute();
+                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");            
+            } catch (Exception e){
                 e.printStackTrace();
-            }
+            }   
         }
+        SelectProduct();
     }//GEN-LAST:event_updateBtnMouseClicked
-
     private void productTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productTableMouseClicked
         // TODO add your handling code here:
         DefaultTableModel model = (DefaultTableModel)productTable.getModel();
@@ -490,9 +485,8 @@ public class Products extends javax.swing.JFrame {
         
 
     }//GEN-LAST:event_productTableMouseClicked
-
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-        // TODO add your handling code here:
+// TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jLabel9MouseClicked
 
@@ -515,38 +509,74 @@ public class Products extends javax.swing.JFrame {
     private void priceVar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceVar1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_priceVar1ActionPerformed
-
+    private String getUnit(){
+        String res = null;
+        String unit = typeVar.getSelectedItem().toString();
+        switch (unit) {
+            case "Stationery":
+                res = "01";
+                break;
+            case "Electric Appliances":
+                res = "02";
+                break;
+            case "Kitchen Utensils & Appliances":
+                res = "03";
+                break;
+            case "Phone Accessories":
+                res = "04";
+                break;
+            case "Detergents":
+                res = "05";
+                break;
+            case "Beauty & Personal Care":
+                res = "06";
+                break;
+            case "Food":
+                res = "07";
+                break;
+            case "Beverage":
+                res = "08";
+                break;
+            default:
+                break;
+        }
+        return res;
+    }
     private void addBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBtnMouseClicked
         // TODO add your handling code here:
-        
         if(branchIDVar.getText().isEmpty() || productIDVar.getText().isEmpty() || unitVar.getText().isEmpty() || quanVar.getText().isEmpty() || nameVar1.getText().isEmpty() || priceVar1.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Missing infomation !!!");
         } else {
-            try{
-                Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
-                PreparedStatement add = Con.prepareStatement("insert into ACCOUNT values(?,?,?)");
-                
-                add.setString(1, branchIDVar.getText());               
-                add.setString(2, productIDVar.getText());
-                add.setString(3, nameVar1.getText());
-                add.setString(4, typeVar.getSelectedItem().toString());
-                add.setInt(5, Integer.valueOf(quanVar.getText()));
-                add.setInt(6, Integer.valueOf(priceVar1.getText()));
-                add.setString(7, unitVar.getText());
-                
-                int row =  add.executeUpdate();
+            String type = getUnit();
+            System.out.println(type);
+            Con = JDBCConnection.getConnection("sa", "123456");
+            String sql = "EXEC pr_InsProd ?,?,?,?,?,?,?";
+            try{               
+                Con.setAutoCommit(true);
+                ps = Con.prepareStatement(sql);
+                ps.setString(1, productIDVar.getText());
+                ps.setString(2, nameVar1.getText());
+                ps.setString(3, type);
+                ps.setString(4, unitVar.getText());
+                ps.setInt(5, Integer.valueOf(priceVar1.getText()));
+                ps.setString(6, branchIDVar.getText());               
+                ps.setInt(7, Integer.valueOf(quanVar.getText()));                            
+                ps.execute();
                 JOptionPane.showMessageDialog(this, "Product have just been added !!!");
-                Con.close();
-                SelectProduct();
             } catch (Exception e){
                 e.printStackTrace();
             }
+            SelectProduct();
         }
     }//GEN-LAST:event_addBtnMouseClicked
 
+    private void typeVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeVarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_typeVarActionPerformed
+
     public void SelectProduct() {
+        Con = JDBCConnection.getConnection("sa", "123456");
         try{
-            Con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=qlbh_onl;encrypt=true;trustServerCertificate=true;", "kubi", "28112001");
             St = (Statement) Con.createStatement();
             Rs = St.executeQuery("EXEC pr_getProductByPartner 'DT0004'");
             productTable.setModel(DbUtils.resultSetToTableModel(Rs));

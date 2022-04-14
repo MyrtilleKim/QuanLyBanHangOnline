@@ -74,20 +74,33 @@ CREATE PROC pr_ProductUpd
 AS
 BEGIN
 	BEGIN TRY
-	BEGIN TRANSACTION
-		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho -
-			(SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) 
-			WHERE ProductID = @masp
+	BEGIN TRANSACTION ProductUpd
 		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
-	COMMIT TRANSACTION
+		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = @tonkho WHERE ProductID = @masp		
+	COMMIT TRANSACTION ProductUpd
 	END TRY
 	BEGIN CATCH
 	DECLARE @ErrorNumber INT = ERROR_NUMBER();
 	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
 	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-	IF @@TRANCOUNT > 0 ROLLBACK TRAN; 
+	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION ProductUpd;
 	END CATCH
 END
+SELECT * FROM PRODUCT
+select * from STORAGE
+begin TRAN 
+	UPDATE PRODUCT SET Price = 3000 WHERE ProductID = 'SP0004';
+	EXEC pr_ProductUpd 'CN0006','SP0008', 'OngTho milk 480', 554, 19000;
+	declare @a tinyint
+	set @a = dbo.f_trancount()
+	print (@a);
+commit tran
+CREATE FUNCTION f_trancount()
+returns tinyint
+as
+begin
+	return @@TRANCOUNT
+end
 ---------------------------------------------------
 -- Add new products to branch
 DROP PROC pr_InsProd
@@ -97,13 +110,12 @@ CREATE PROC pr_InsProd
 	@malsp char(6),
 	@donvi varchar(15),
 	@dongia int, 
-	@img varchar(200),
 	@macn char(6),
 	@solg int
 AS
 BEGIN
 	IF NOT EXISTS(SELECT * FROM PRODUCT WHERE ProductID = @masp)
-		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price,Img) VALUES(@masp, @tensp, @malsp, @donvi, @dongia,@img)
+		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price) VALUES(@masp, @tensp, @malsp, @donvi, @dongia)
 	INSERT INTO STORAGE VALUES(@macn,@masp,@solg)	
 END 
 
@@ -113,7 +125,7 @@ EXEC pr_InsProd
 	'07', 
 	'Can', 
 	17000, 
-	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg',
+--	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg',
 	'CN0007',20
 
 SELECT * FROM PRODUCT WHERE Price < 50000
@@ -155,17 +167,17 @@ BEGIN
 	IF (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh) != 1
 		RETURN 0;
 	BEGIN TRY
-		BEGIN TRANSACTION 
+		BEGIN TRANSACTION TakeDelivery
 			UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = @madh
 			INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(@madh,@matx)
-		COMMIT TRANSACTION;
+		COMMIT TRANSACTION TakeDelivery;
 		RETURN 1;
 	END TRY
 	BEGIN CATCH
 		DECLARE @ErrorNumber INT = ERROR_NUMBER();
 		DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
 		RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION; 
+		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION TakeDelivery; 
 		RETURN 0;
 	END CATCH
 END
@@ -186,10 +198,19 @@ BEGIN
 		RETURN 0
 	IF NOT EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
 		RETURN 0
-	BEGIN TRANSACTION
-		UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
-		DELETE DELIVERY_NOTE WHERE ReceiptID = @madh
-	COMMIT TRANSACTION
+	BEGIN TRY
+		BEGIN TRANSACTION CancelDelivery
+			UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
+			DELETE DELIVERY_NOTE WHERE ReceiptID = @madh
+		COMMIT TRANSACTION CancelDelivery
+	END TRY
+	BEGIN CATCH
+		DECLARE @ErrorNumber INT = ERROR_NUMBER();
+		DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
+		RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
+		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION TakeDelivery; 
+		RETURN 0;
+	END CATCH
 	RETURN 1
 END
 DECLARE @kq tinyint
