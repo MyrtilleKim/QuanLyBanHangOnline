@@ -86,21 +86,6 @@ BEGIN
 	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION ProductUpd;
 	END CATCH
 END
-SELECT * FROM PRODUCT
-select * from STORAGE
-begin TRAN 
-	UPDATE PRODUCT SET Price = 3000 WHERE ProductID = 'SP0004';
-	EXEC pr_ProductUpd 'CN0006','SP0008', 'OngTho milk 480', 554, 19000;
-	declare @a tinyint
-	set @a = dbo.f_trancount()
-	print (@a);
-commit tran
-CREATE FUNCTION f_trancount()
-returns tinyint
-as
-begin
-	return @@TRANCOUNT
-end
 ---------------------------------------------------
 -- Add new products to branch
 DROP PROC pr_InsProd
@@ -129,6 +114,7 @@ EXEC pr_InsProd
 	'CN0007',20
 
 SELECT * FROM PRODUCT WHERE Price < 50000
+
 ---------------------------------------------------
 -- Order confirmation
 DROP PROC pr_OrderConfirmation
@@ -158,7 +144,7 @@ END
 EXEC pr_addRDetail 'DH0009', 'SP0002', 1
 ---------------------------------------------------
 -- Take delivery
-DROP PROC pr_TakeDelivery
+/*DROP PROC pr_TakeDelivery
 CREATE PROC pr_TakeDelivery
 	@madh char(6),
 	@matx char(6)
@@ -184,10 +170,10 @@ END
 DECLARE @kq tinyint
 EXEC @kq = pr_TakeDelivery 'DH0001', 'TX0006'
 if @kq = 0
-	PRINT 'Can not take delivery'
+	PRINT 'Can not take delivery'*/
 ---------------------------------------------------
 -- Cancel delivery
-DROP PROC pr_CancelDelivery
+/*DROP PROC pr_CancelDelivery
 CREATE PROC pr_CancelDelivery
 	@madh char(6)
 AS
@@ -216,5 +202,5 @@ END
 DECLARE @kq tinyint
 EXEC @kq = pr_CancelDelivery 'DH0001'
 if @kq = 0
-	PRINT 'Can not Cancel delivery'
+	PRINT 'Can not Cancel delivery'*/
 

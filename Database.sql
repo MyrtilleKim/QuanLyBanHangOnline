@@ -81,7 +81,6 @@ CREATE TABLE SHIPPER
 	NoAcc varchar(20)
 )
 
-
 ---------------------------------------------------
 -- CUSTOMER
 CREATE TABLE CUSTOMER
@@ -434,6 +433,41 @@ BEGIN
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
 END
 ---------------------------------------------------
+-- Take delivery
+CREATE TRIGGER tr_UpdReceiptStatus_Take
+ON DELIVERY_NOTE
+AFTER INSERT
+AS
+BEGIN 
+	DECLARE @stt tinyint, @madh char(6);
+	SET @madh = (SELECT ReceiptID FROM inserted)
+	SET @stt = (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh)
+	IF @stt != 1
+		BEGIN
+			RAISERROR ('Can not take delivery',16,1)
+			ROLLBACK
+			RETURN
+		END
+	UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = (SELECT ReceiptID FROM inserted)
+END
+---------------------------------------------------
+-- Cancel delivery
+CREATE TRIGGER tr_UpdReceiptStatus_Can
+ON DELIVERY_NOTE 
+AFTER DELETE
+AS
+BEGIN
+	DECLARE @stt tinyint, @madh char(6);
+	SET @madh = (SELECT ReceiptID FROM deleted)
+	SET @stt = (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh)
+	IF @stt = 1 OR @stt = 0 OR @stt = 4
+		BEGIN
+			RAISERROR ('Can not cancel delivery',16,1)
+			ROLLBACK
+			RETURN
+		END
+	UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
+END
 ---------------------------------------------------
 set dateformat dmy
 ---------------------------------------------------
