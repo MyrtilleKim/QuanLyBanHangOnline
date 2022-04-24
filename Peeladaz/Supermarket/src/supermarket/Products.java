@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
@@ -32,7 +34,7 @@ public class Products extends javax.swing.JFrame {
     Statement St = null;
     PreparedStatement ps = null;
     ResultSet Rs = null;
-
+    String user = "sa", pass = "123456";
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -455,20 +457,48 @@ public class Products extends javax.swing.JFrame {
         if(branchIDVar.getText().isEmpty() || productIDVar.getText().isEmpty() || unitVar.getText().isEmpty() || quanVar.getText().isEmpty() || nameVar1.getText().isEmpty() || priceVar1.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Missing infomation !!!");
         } else {
-            Con = JDBCConnection.getConnection("sa", "123456");
-            String sql = "EXEC pr_ProductUpd ?,?,?,?,?;";
+            Con = JDBCConnection.getConnection(user, pass);
+            String sql0 = "UPDATE PRODUCT SET ProductName = ?, Price=?, NoInventory = NoInventory + ? - (SELECT Quantity FROM STORAGE WHERE BranchID = ? AND ProductID = ?) WHERE ProductID = ?";
+            String sql1 = "UPDATE STORAGE SET Quantity = ? WHERE BranchID = ? AND ProductID = ?";
+            try {
+                Con.setAutoCommit(false);
+            } catch (SQLException ex) {
+                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+            }
             try{
-                ps = Con.prepareStatement(sql);
-                ps.setString(1, branchIDVar.getText());   
-                ps.setString(2, productIDVar.getText());
-                ps.setString(3, nameVar1.getText());
-                ps.setInt(4, Integer.valueOf(quanVar.getText()));
-                ps.setInt(5, Integer.valueOf(priceVar1.getText()));
+                String masp = productIDVar.getText(), macn = branchIDVar.getText();
+                ps = Con.prepareStatement(sql0);
+                ps.setString(1, nameVar1.getText());
+                ps.setInt(2, Integer.valueOf(priceVar1.getText()));
+                ps.setInt(3, Integer.valueOf(quanVar.getText()));
+                ps.setString(4, macn);
+                ps.setString(5, masp);
+                ps.setString(6, masp);
+                
+                PreparedStatement ps1 = Con.prepareStatement(sql1);                                      
+                ps1.setInt(1, Integer.valueOf(quanVar.getText()));
+                ps1.setString(2, macn);
+                ps1.setString(3, masp);
+                
                 ps.execute();
+                ps1.execute();
+                Con.commit();
                 JOptionPane.showMessageDialog(this, "Information have been Updated !!!");            
             } catch (Exception e){
                 e.printStackTrace();
-            }   
+                try {
+                    Con.rollback();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } finally{
+                try {
+                    Con.setAutoCommit(true);
+                    Con.close();                    
+                } catch (SQLException ex) {
+                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         SelectProduct();
     }//GEN-LAST:event_updateBtnMouseClicked
@@ -549,10 +579,9 @@ public class Products extends javax.swing.JFrame {
         } else {
             String type = getUnit();
             System.out.println(type);
-            Con = JDBCConnection.getConnection("sa", "123456");
+            Con = JDBCConnection.getConnection(user, pass);
             String sql = "EXEC pr_InsProd ?,?,?,?,?,?,?";
             try{               
-                Con.setAutoCommit(true);
                 ps = Con.prepareStatement(sql);
                 ps.setString(1, productIDVar.getText());
                 ps.setString(2, nameVar1.getText());
@@ -575,7 +604,7 @@ public class Products extends javax.swing.JFrame {
     }//GEN-LAST:event_typeVarActionPerformed
 
     public void SelectProduct() {
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         try{
             St = (Statement) Con.createStatement();
             Rs = St.executeQuery("EXEC pr_getProductByPartner 'DT0004'");

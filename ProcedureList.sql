@@ -75,8 +75,9 @@ AS
 BEGIN
 	BEGIN TRY
 	BEGIN TRANSACTION ProductUpd
+		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho - (SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp) WHERE ProductID = @masp
 		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp
-		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = @tonkho WHERE ProductID = @masp		
+				
 	COMMIT TRANSACTION ProductUpd
 	END TRY
 	BEGIN CATCH

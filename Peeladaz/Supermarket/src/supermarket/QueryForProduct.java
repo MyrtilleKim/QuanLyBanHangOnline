@@ -20,10 +20,10 @@ import javax.management.Query;
  */
 public class QueryForProduct {
     
-    public ArrayList<ListOfProducts> BindTable(){
+    public ArrayList<ListOfProducts> BindTable(String user, String pass){
         
     ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
-    Connection con = JDBCConnection.getConnection("sa", "123456");
+    Connection con = JDBCConnection.getConnection(user, pass);
     Statement st;
     ResultSet rs;
    

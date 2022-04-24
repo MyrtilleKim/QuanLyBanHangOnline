@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.sql.*;
 import java.sql.Statement;
 import java.sql.ResultSet;
 //import java.sql.Driver;
@@ -47,7 +48,7 @@ public class ShowProduct extends javax.swing.JFrame {
     Connection Con = null;
     Statement St = null;
     ResultSet Rs = null;
-    
+    String user = "sa", pass = "123456";
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -466,11 +467,34 @@ public class ShowProduct extends javax.swing.JFrame {
     private void confirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmBtnActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_confirmBtnActionPerformed
-
+    private String getReceiptID() throws SQLException{
+        Con = JDBCConnection.getConnection(user, pass);
+        CallableStatement cstmt = Con.prepareCall("{? = call AUTO_ReceiptID()}");
+        cstmt.registerOutParameter(1, Types.CHAR);
+        cstmt.execute();
+        return cstmt.getString(1);
+    }
     private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
-        // TODO add your handling code here:
-        ArrayList<Receipt> list = new ArrayList();
-        Receipt temp = new Receipt(null, null, feeDelivery, cashAndCard, listRD);
+        try{                                        
+            String CustomerID = "KH0002";
+            Receipt receipt = new Receipt(getReceiptID(), CustomerID, feeDelivery, cashAndCard, listRD);
+            Con = JDBCConnection.getConnection(user, pass);
+            String sql0 = "INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(?, ?, GETDATE(), ?, ?)";
+            PreparedStatement ps0 = null;
+            try{
+
+                ps0 = Con.prepareStatement(sql0);
+                ps0.setString(1,receipt.getReceiptID());
+                ps0.setString(2,receipt.getCustomerID());
+                ps0.setInt(3,receipt.getDeliveryCharges());
+                ps0.setBoolean(4, cashAndCard);
+                ps0.execute();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_confirmBtnMouseClicked
 
     private void clearBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBillBtnActionPerformed
@@ -508,7 +532,7 @@ public class ShowProduct extends javax.swing.JFrame {
         //        ProductTable.setModel(DbUtils.resultSetToTableModel(Rs));
         String typeTemp = null;
         try{
-            Con = JDBCConnection.getConnection("sa", "123456");
+            Con = JDBCConnection.getConnection(user, pass);
             St = (Statement) Con.createStatement();
 
             if (fillterBox.getSelectedItem() == "Stationery"){
@@ -841,7 +865,7 @@ int numberOfProduct = 0;
 boolean cashAndCard = true;    
     public void UpdateQTY(){
         try{
-            JDBCConnection.getConnection("sa", "123456");
+            JDBCConnection.getConnection(user, pass);
             PreparedStatement add = Con.prepareStatement("UPDATE PRODUCT SET NoInventory = ? WHERE ProductName = ?");
             
             add.setString(1, afQTY);
@@ -871,7 +895,7 @@ boolean cashAndCard = true;
     public void populateJTable () throws MalformedURLException, IOException {
 //        DefaultTableModel model =(DefaultTableModel) ProductTabel.getModel();
         QueryForProduct mq = new QueryForProduct();
-        ArrayList<ListOfProducts> list = mq.BindTable();
+        ArrayList<ListOfProducts> list = mq.BindTable(user, pass);
         String[]columnName = {"Name","Unit","Price","No Inventory","Image"};
         Object[][] rows = new Object [list.size()][5];
         for (int i = 0; i < list.size (); i++) {
