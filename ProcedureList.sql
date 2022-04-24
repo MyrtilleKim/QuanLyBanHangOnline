@@ -50,6 +50,7 @@ BEGIN
 	FROM DELIVERY_NOTE DN LEFT JOIN RECEIPT R ON DN.ReceiptID = R.ReceiptID LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
 	WHERE ShipperID = @matx
 END
+EXEC pr_getDeliveryNote 'TX0001'
 ---------------------------------------------------
 -- Get Product By PartnerID
 DROP PROC pr_getProductByPartner
@@ -128,9 +129,8 @@ AS
 BEGIN
 	INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(@mahd, @makh, GETDATE(), @phiship, @pttt)
 END 
-
-EXEC pr_OrderConfirmation 'DH0009','KH0005',15000,1
-
+EXEC pr_OrderConfirmation 'DH0014','KH0005',15000,1
+update RECEIPT set ReceiptStatus = 2 where ReceiptID = 'DH0014'
 ---------------------------------------------------
 -- Add Receipt Detail
 DROP PROC pr_addRDetail
@@ -142,10 +142,10 @@ AS
 BEGIN
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
-EXEC pr_addRDetail 'DH0009', 'SP0002', 1
+EXEC pr_addRDetail 'DH0014', 'SP0002', 1
 ---------------------------------------------------
 -- Take delivery
-/*DROP PROC pr_TakeDelivery
+DROP PROC pr_TakeDelivery
 CREATE PROC pr_TakeDelivery
 	@madh char(6),
 	@matx char(6)
@@ -168,10 +168,11 @@ BEGIN
 		RETURN 0;
 	END CATCH
 END
+SELECT * FROM RECEIPT
 DECLARE @kq tinyint
-EXEC @kq = pr_TakeDelivery 'DH0001', 'TX0006'
+EXEC @kq = pr_TakeDelivery 'DH0014', 'TX0006'
 if @kq = 0
-	PRINT 'Can not take delivery'*/
+	PRINT 'Can not take delivery'
 ---------------------------------------------------
 -- Cancel delivery
 /*DROP PROC pr_CancelDelivery
