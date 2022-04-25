@@ -25,27 +25,33 @@ public class QueryForProduct {
     ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
     Connection con = JDBCConnection.getConnection(user, pass);
     Statement st;
-    ResultSet rs;
-   
+    ResultSet rs;   
    try {
         st = con.createStatement();
-        rs = st.executeQuery("SELECT ProductName, Unit, Price, NoInventory,Img FROM Product");
+        rs = st.executeQuery("SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM Product");
 
         ListOfProducts p;
         while(rs.next()){
              p = new ListOfProducts(
-                             rs.getString("ProductName"),
-                             rs.getString("Unit"),
-                             rs.getInt("Price"),
-                             rs.getInt("NoInventory"),
-                             rs.getString("Img")
-                     );
+                rs.getString("ProductID"),
+                rs.getString("ProductName"),
+                rs.getString("Unit"),
+                rs.getInt("Price"),
+                rs.getInt("NoInventory"),
+                rs.getString("Img")
+            );
         list.add(p);
         }
     } catch (SQLException ex) {
         Logger.getLogger(QueryForProduct.class.getName()).log(Level.SEVERE, null, ex);
+    }finally{
+        try {
+            con.close();   
+        } catch (SQLException ex) {
+            Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }                                     
     }
-        return list;
+    return list;
    }
 }
 

@@ -460,12 +460,8 @@ public class Products extends javax.swing.JFrame {
             Con = JDBCConnection.getConnection(user, pass);
             String sql0 = "UPDATE PRODUCT SET ProductName = ?, Price=?, NoInventory = NoInventory + ? - (SELECT Quantity FROM STORAGE WHERE BranchID = ? AND ProductID = ?) WHERE ProductID = ?";
             String sql1 = "UPDATE STORAGE SET Quantity = ? WHERE BranchID = ? AND ProductID = ?";
-            try {
-                Con.setAutoCommit(false);
-            } catch (SQLException ex) {
-                Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
-            }
             try{
+                Con.setAutoCommit(false);
                 String masp = productIDVar.getText(), macn = branchIDVar.getText();
                 ps = Con.prepareStatement(sql0);
                 ps.setString(1, nameVar1.getText());

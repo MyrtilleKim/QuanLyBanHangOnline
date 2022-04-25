@@ -14,7 +14,7 @@ public class Receipt_Detail {
     int qty;
     int price;
     
-    public Receipt_Detail(String prodId, String nameProd, int price, int qty) {
+    public Receipt_Detail(String prodId, String nameProd, int qty, int price) {
         this.prodId = prodId;
         this.nameProd = nameProd;
         this.qty = qty;
@@ -55,6 +55,10 @@ public class Receipt_Detail {
 
     public void setQty(int qty) {
         this.qty = qty;
+    }
+    @Override
+    public String toString(){
+        return this.prodId + " " + this.nameProd + " " + this.qty + " " + this.price;
     }
     
 }

@@ -115,8 +115,8 @@ EXEC pr_InsProd
 --	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg',
 	'CN0007',20
 
-SELECT * FROM PRODUCT WHERE Price < 50000
-
+SELECT * FROM RECEIPT
+select * from RECEIPT_DETAIL where ReceiptID = 'DH0009'
 ---------------------------------------------------
 -- Order confirmation
 DROP PROC pr_OrderConfirmation
@@ -143,7 +143,7 @@ BEGIN
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
 EXEC pr_addRDetail 'DH0014', 'SP0002', 1
----------------------------------------------------
+/*---------------------------------------------------
 -- Take delivery
 DROP PROC pr_TakeDelivery
 CREATE PROC pr_TakeDelivery
@@ -175,7 +175,7 @@ if @kq = 0
 	PRINT 'Can not take delivery'
 ---------------------------------------------------
 -- Cancel delivery
-/*DROP PROC pr_CancelDelivery
+DROP PROC pr_CancelDelivery
 CREATE PROC pr_CancelDelivery
 	@madh char(6)
 AS

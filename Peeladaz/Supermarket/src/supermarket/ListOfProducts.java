@@ -9,18 +9,28 @@ package supermarket;
  * @author ranco
  */
 public class ListOfProducts {
+    String productID;
     String productName;
     String unit;
     int price;
     int noProd;
     String img;
 
-    public ListOfProducts(String productName, String unit, int price, int noProd, String img) {
+    public ListOfProducts(String productID, String productName, String unit, int price, int noProd, String img) {
+        this.productID = productID;
         this.productName = productName;
         this.unit = unit;
         this.price = price;
         this.noProd = noProd;
         this.img = img;
+    }
+    
+     public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
     
     public int getNoProd() {
