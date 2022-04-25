@@ -913,7 +913,7 @@ public class ShowProduct extends javax.swing.JFrame {
     private Connection Con = null;
     private ResultSet Rs = null;
     private Statement St = null;
-    private String user = "sa", pass = "123456";
+    private String user = "kubi", pass = "28112001";
     private int ProdTotal = 0;
     private int bigTotal = 0;
     private int smallTotal = 0;
