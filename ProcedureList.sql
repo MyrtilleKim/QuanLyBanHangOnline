@@ -40,6 +40,18 @@ BEGIN
 END
 EXEC pr_getReceipt
 ---------------------------------------------------
+--Get receipt by District
+DROP PROC pr_getReceipt
+CREATE PROC pr_getReceiptByReceipt
+	@quan varchar(30)
+AS
+BEGIN
+	SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges 
+	FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
+	WHERE ReceiptStatus = 1 AND C.District = @quan
+END
+EXEC pr_getReceiptByReceipt 'District 5'
+---------------------------------------------------
 -- Get Delivery note
 DROP PROC pr_getDeliveryNote
 CREATE PROC pr_getDeliveryNote
@@ -143,66 +155,4 @@ BEGIN
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
 EXEC pr_addRDetail 'DH0014', 'SP0002', 1
-/*---------------------------------------------------
--- Take delivery
-DROP PROC pr_TakeDelivery
-CREATE PROC pr_TakeDelivery
-	@madh char(6),
-	@matx char(6)
-AS
-BEGIN 
-	IF (SELECT ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh) != 1
-		RETURN 0;
-	BEGIN TRY
-		BEGIN TRANSACTION TakeDelivery
-			UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = @madh
-			INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(@madh,@matx)
-		COMMIT TRANSACTION TakeDelivery;
-		RETURN 1;
-	END TRY
-	BEGIN CATCH
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
-		DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
-		RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION TakeDelivery; 
-		RETURN 0;
-	END CATCH
-END
-SELECT * FROM RECEIPT
-DECLARE @kq tinyint
-EXEC @kq = pr_TakeDelivery 'DH0014', 'TX0006'
-if @kq = 0
-	PRINT 'Can not take delivery'
----------------------------------------------------
--- Cancel delivery
-DROP PROC pr_CancelDelivery
-CREATE PROC pr_CancelDelivery
-	@madh char(6)
-AS
-BEGIN 
-	DECLARE @tinhtrang tinyint
-	SELECT @tinhtrang=ReceiptStatus FROM RECEIPT WHERE ReceiptID = @madh
-	IF @tinhtrang = 1 OR @tinhtrang = 0 OR @tinhtrang = 4
-		RETURN 0
-	IF NOT EXISTS(SELECT * FROM DELIVERY_NOTE WHERE ReceiptID = @madh)
-		RETURN 0
-	BEGIN TRY
-		BEGIN TRANSACTION CancelDelivery
-			UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
-			DELETE DELIVERY_NOTE WHERE ReceiptID = @madh
-		COMMIT TRANSACTION CancelDelivery
-	END TRY
-	BEGIN CATCH
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
-		DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
-		RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-		IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION TakeDelivery; 
-		RETURN 0;
-	END CATCH
-	RETURN 1
-END
-DECLARE @kq tinyint
-EXEC @kq = pr_CancelDelivery 'DH0001'
-if @kq = 0
-	PRINT 'Can not Cancel delivery'*/
 

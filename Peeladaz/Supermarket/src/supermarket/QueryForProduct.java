@@ -28,7 +28,7 @@ public class QueryForProduct {
     ResultSet rs;   
    try {
         st = con.createStatement();
-        rs = st.executeQuery("SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM Product");
+        rs = st.executeQuery("SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT");
 
         ListOfProducts p;
         while(rs.next()){

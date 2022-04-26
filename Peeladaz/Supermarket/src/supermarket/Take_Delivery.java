@@ -31,7 +31,6 @@ public class Take_Delivery extends javax.swing.JFrame {
     
     Connection Con = null;
     PreparedStatement Ps = null;
-    Statement St = null;
     ResultSet Rs = null;
 
     /**
@@ -392,52 +391,17 @@ public class Take_Delivery extends javax.swing.JFrame {
     private void RefreshBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RefreshBtnMouseClicked
         // TODO add your handling code here:
         String typeTemp = null;
-        try{
-            Con = JDBCConnection.getConnection("sa", "123456");
-            St = (Statement) Con.createStatement();
-
-            if (fillterBox.getSelectedItem() == "District 1"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 1'");
-            }else if (fillterBox.getSelectedItem() == "District 2"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 2'");
-            }else if (fillterBox.getSelectedItem() == "District 3"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 3'");
-            }else if (fillterBox.getSelectedItem() == "District 4"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 4'");
-            }else if (fillterBox.getSelectedItem() == "District 5"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 5'");
-            }else if (fillterBox.getSelectedItem() == "District 6"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 6'");
-            }else if (fillterBox.getSelectedItem() == "District 7"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 7'");
-            }else if (fillterBox.getSelectedItem() == "District 8"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 8'");
-            }else if (fillterBox.getSelectedItem() == "District 9"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 9'");
-            }else if (fillterBox.getSelectedItem() == "District 10"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 10'");
-            }else if (fillterBox.getSelectedItem() == "District 11"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 11'");
-            }else if (fillterBox.getSelectedItem() == "District 12"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'District 12'");
-            }else if (fillterBox.getSelectedItem() == "Binh Tan District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Binh Tan District'");
-            }else if (fillterBox.getSelectedItem() == "Binh Thanh District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Binh Thanh District'");
-            }else if (fillterBox.getSelectedItem() == "Go Vap District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Go Vap District'");
-            }else if (fillterBox.getSelectedItem() == "Phu Nhuan District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Phu Nhuan District'");
-            }else if (fillterBox.getSelectedItem() == "Tan Binh District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Tan Binh District'");
-            }else if (fillterBox.getSelectedItem() == "Tan Phu District"){
-                Rs = St.executeQuery("SELECT R.ReceiptID, C.CustomerName, C.Addr , C.District, R.OrderDate, R.DeliveryCharges FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID WHERE ReceiptStatus = 1 AND C.District = 'Tan Phu District'");
-            }else if (fillterBox.getSelectedItem() == "ALL"){
-                Rs = St.executeQuery("EXEC pr_getReceipt");
+        Con = JDBCConnection.getConnection("sa", "123456");
+        try{      
+            String filter = (String)fillterBox.getSelectedItem();
+            if(filter == "ALL")
+                Ps = Con.prepareStatement("EXEC pr_getReceipt");
+            else{
+                Ps = Con.prepareStatement("EXEC pr_getReceiptByReceipt ?");
+                Ps.setString(1, (String)fillterBox.getSelectedItem());
             }
+            Rs = Ps.executeQuery();
             receiptTable.setModel(DbUtils.resultSetToTableModel(Rs));
-            //            receiptTable.getColumnModel().getColumn(0).setPreferredWidth(150);
-            //            receiptTable.setRowHeight(25);
         } catch (Exception e){
             e.printStackTrace();
         }

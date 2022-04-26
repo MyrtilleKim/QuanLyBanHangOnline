@@ -4,15 +4,20 @@
  */
 package supermarket;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import net.proteanit.sql.DbUtils;
 
@@ -432,7 +437,32 @@ public class Products extends javax.swing.JFrame {
     private void branchIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_branchIDVarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_branchIDVarActionPerformed
-
+    public Boolean UndoAction(){
+        final JOptionPane msg = new JOptionPane("Do you want to undo your action?", JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+        final JDialog dlg = msg.createDialog("UNDO");
+        dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        dlg.setLocationRelativeTo(this);
+        dlg.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                super.componentShown(e);
+                final Timer t = new Timer(5000,new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dlg.setVisible(false);
+                    }
+                });
+                t.start();
+            }
+        });
+        dlg.setVisible(true);
+         Object selectedvalue = msg.getValue();
+        if (selectedvalue.equals(JOptionPane.OK_OPTION)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     private void updateBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateBtnMouseClicked
         // TODO add your handling code here:
         if(branchIDVar.getText().isEmpty() || productIDVar.getText().isEmpty() || unitVar.getText().isEmpty() || quanVar.getText().isEmpty() || nameVar1.getText().isEmpty() || priceVar1.getText().isEmpty()){
@@ -459,8 +489,13 @@ public class Products extends javax.swing.JFrame {
                 
                 ps.execute();
                 ps1.execute();
-                Con.commit();
-                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");            
+                Boolean undo = UndoAction();
+                if(undo)
+                    Con.rollback();
+                else {
+                    Con.commit();
+                    JOptionPane.showMessageDialog(this, "Information have been Updated !!!");    
+                }        
             } catch (Exception e){
                 e.printStackTrace();
                 try {
@@ -493,7 +528,7 @@ public class Products extends javax.swing.JFrame {
 
     }//GEN-LAST:event_productTableMouseClicked
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-// TODO add your handling code here:
+        // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jLabel9MouseClicked
 
@@ -556,7 +591,7 @@ public class Products extends javax.swing.JFrame {
                 ps.setString(6, branchIDVar.getText());               
                 ps.setInt(7, Integer.valueOf(quanVar.getText()));                            
                 ps.execute();
-                JOptionPane.showMessageDialog(this, "Product have just been added !!!");
+                JOptionPane.showMessageDialog(this, "Product have just been added !!!");        
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -587,7 +622,7 @@ public class Products extends javax.swing.JFrame {
         Con = JDBCConnection.getConnection(user, pass);
         try{
             St = (Statement) Con.createStatement();
-            Rs = St.executeQuery("EXEC pr_getProductByPartner 'DT0004'");
+            Rs = St.executeQuery("EXEC pr_getProductByPartner 'DT0003'");
             productTable.setModel(DbUtils.resultSetToTableModel(Rs));
         } catch (Exception e){
             e.printStackTrace();
