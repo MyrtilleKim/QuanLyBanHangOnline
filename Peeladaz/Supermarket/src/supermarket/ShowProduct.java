@@ -5,6 +5,7 @@
 package supermarket;
 
 import java.awt.Image;
+import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -63,7 +64,6 @@ public class ShowProduct extends javax.swing.JFrame {
         AddBtn = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         ProductTable2 = new javax.swing.JTable();
-        RefreshBtn = new javax.swing.JButton();
         billVar = new javax.swing.JLabel();
         paymentVar = new javax.swing.JLabel();
         allPaymentVar = new javax.swing.JLabel();
@@ -119,18 +119,13 @@ public class ShowProduct extends javax.swing.JFrame {
         nameVar.setEditable(false);
         nameVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         nameVar.setForeground(new java.awt.Color(153, 153, 255));
-        nameVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameVarActionPerformed(evt);
-            }
-        });
 
         fillterBox.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         fillterBox.setForeground(new java.awt.Color(153, 153, 255));
         fillterBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "Lower 50k", "50k to 500k", "Higher 500k", "Stationery", "Electric Appliances", "Kitchen Utensils & Appliances", "Phone Accessories", "Detergents", "Beauty & Personal Care", "Food", "Beverage" }));
-        fillterBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fillterBoxActionPerformed(evt);
+        fillterBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                fillterBoxItemStateChanged(evt);
             }
         });
 
@@ -153,11 +148,6 @@ public class ShowProduct extends javax.swing.JFrame {
         priceVar.setEditable(false);
         priceVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         priceVar.setForeground(new java.awt.Color(153, 153, 255));
-        priceVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                priceVarActionPerformed(evt);
-            }
-        });
 
         jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(153, 153, 255));
@@ -173,11 +163,6 @@ public class ShowProduct extends javax.swing.JFrame {
                 AddBtnMouseClicked(evt);
             }
         });
-        AddBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddBtnActionPerformed(evt);
-            }
-        });
 
         ProductTable2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         ProductTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -189,19 +174,6 @@ public class ShowProduct extends javax.swing.JFrame {
             }
         ));
         jScrollPane4.setViewportView(ProductTable2);
-
-        RefreshBtn.setText("Refresh");
-        RefreshBtn.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, new java.awt.Color(242, 242, 242), new java.awt.Color(204, 204, 204), new java.awt.Color(204, 204, 204), new java.awt.Color(204, 204, 204)));
-        RefreshBtn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                RefreshBtnMouseClicked(evt);
-            }
-        });
-        RefreshBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RefreshBtnActionPerformed(evt);
-            }
-        });
 
         billVar.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         billVar.setForeground(new java.awt.Color(153, 153, 255));
@@ -222,11 +194,6 @@ public class ShowProduct extends javax.swing.JFrame {
                 clearBillBtnMouseClicked(evt);
             }
         });
-        clearBillBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearBillBtnActionPerformed(evt);
-            }
-        });
 
         confirmBtn.setBackground(new java.awt.Color(0, 204, 51));
         confirmBtn.setText("Confirm");
@@ -234,11 +201,6 @@ public class ShowProduct extends javax.swing.JFrame {
         confirmBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 confirmBtnMouseClicked(evt);
-            }
-        });
-        confirmBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                confirmBtnActionPerformed(evt);
             }
         });
 
@@ -305,8 +267,7 @@ public class ShowProduct extends javax.swing.JFrame {
                                     .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(jLabel6)
-                                        .addGap(27, 27, 27)
-                                        .addComponent(RefreshBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(109, 109, 109))
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(jPanel2Layout.createSequentialGroup()
                                             .addComponent(jLabel2)
@@ -328,9 +289,7 @@ public class ShowProduct extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(23, 23, 23)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(RefreshBtn))
+                        .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -449,14 +408,6 @@ public class ShowProduct extends javax.swing.JFrame {
             cashAndCard = true;
         }
     }//GEN-LAST:event_cashVarActionPerformed
-
-    private void cardVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardVarActionPerformed
-
-    }//GEN-LAST:event_cardVarActionPerformed
-
-    private void confirmBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_confirmBtnActionPerformed
     private String getReceiptID() throws SQLException{
         Con = JDBCConnection.getConnection(user, pass);
         CallableStatement cstmt = Con.prepareCall("{? = call AUTO_ReceiptID()}");
@@ -506,10 +457,6 @@ public class ShowProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_confirmBtnMouseClicked
 
-    private void clearBillBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBillBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_clearBillBtnActionPerformed
-
     private void clearBillBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBillBtnMouseClicked
         // TODO add your handling code here:
         ProdTotal = 0;
@@ -530,235 +477,6 @@ public class ShowProduct extends javax.swing.JFrame {
         ProductTable2.getColumnModel().getColumn(3).setPreferredWidth(10);
         ListProd.clear();
     }//GEN-LAST:event_clearBillBtnMouseClicked
-
-    private void RefreshBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_RefreshBtnActionPerformed
-
-    private void RefreshBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RefreshBtnMouseClicked
-        // TODO add your handling code here:
-        String typeTemp = null;
-        try{
-            Con = JDBCConnection.getConnection(user, pass);
-            St = (Statement) Con.createStatement();
-
-            if (fillterBox.getSelectedItem() == "Stationery"){
-                //                clearTable();
-                typeTemp = "01";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }
-            else if (fillterBox.getSelectedItem() == "Electric Appliances"){
-                typeTemp = "02";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            } else if (fillterBox.getSelectedItem() == "Kitchen Utensils & Appliances"){
-                typeTemp = "03";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            } else if (fillterBox.getSelectedItem() == "Phone Accessories"){
-                typeTemp = "04";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            } else if (fillterBox.getSelectedItem() == "Detergents"){
-                typeTemp = "05";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            } else if (fillterBox.getSelectedItem() == "Beauty & Personal Care"){
-                typeTemp = "06";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "Food"){
-                typeTemp = "07";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "Beverage"){
-                typeTemp = "08";
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE ProdTypeID =" + typeTemp);
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "Lower 50k"){
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price <" + 50000 + "Order by Price ASC");
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "50k to 500k"){
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price >=" + 50000 + " AND Price <="+ 500000 + "Order by Price ASC");
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "Higher 500k"){
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price >" + 500000 + "Order by Price ASC");
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }else if (fillterBox.getSelectedItem() == "All"){
-                ArrayList<ListOfProducts> list = new ArrayList();
-                Rs = St.executeQuery("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT Order by Price ASC");
-                ListOfProducts p;
-                while(Rs.next()){
-                    p = new ListOfProducts(     
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally{
-            try {
-                Con.close();   
-            } catch (SQLException ex) {
-                Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
-            }                                     
-        }
-    }//GEN-LAST:event_RefreshBtnMouseClicked
-
-    private void AddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_AddBtnActionPerformed
 
     private void AddBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddBtnMouseClicked
         // TODO add your handling code here:
@@ -801,18 +519,6 @@ public class ShowProduct extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_AddBtnMouseClicked
 
-    private void priceVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceVarActionPerformed
-        // TODO add your handling code here:      
-    }//GEN-LAST:event_priceVarActionPerformed
-
-    private void fillterBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fillterBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_fillterBoxActionPerformed
-
-    private void nameVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameVarActionPerformed
-
     private void ProductTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProductTableMouseClicked
         // TODO add your handling code here:
         int Myindex = ProductTable.getSelectedRow();
@@ -825,6 +531,89 @@ public class ShowProduct extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jLabel9MouseClicked
+    private String getTypee(String type){
+        String res = null;
+        switch (type) {
+            case "Stationery":
+                res = "01";
+                break;
+            case "Electric Appliances":
+                res = "02";
+                break;
+            case "Kitchen Utensils & Appliances":
+                res = "03";
+                break;
+            case "Phone Accessories":
+                res = "04";
+                break;
+            case "Detergents":
+                res = "05";
+                break;
+            case "Beauty & Personal Care":
+                res = "06";
+                break;
+            case "Food":
+                res = "07";
+                break;
+            case "Beverage":
+                res = "08";
+                break;
+            default:
+                break;
+        }
+        return res;
+    }
+    private void fillterBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fillterBoxItemStateChanged
+        // TODO add your handling code here:
+        Con = JDBCConnection.getConnection("sa", "123456");
+        PreparedStatement Ps = null;
+        String item = (String) evt.getItem();
+        ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
+        String sql1 = "EXEC pr_getProductByType ?";
+        String sql0 = "SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT";
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            System.out.println(item);
+            try{  
+                switch (item) {
+                    case "ALL":
+                        Ps = Con.prepareStatement(sql0);
+                        break;
+                    case "Lower 50k":
+                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price < 50000 Order by Price ASC");
+                        break;
+                    case "50k to 500k":
+                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price >= 50000 and Price <= 500000 Order by Price ASC");                        
+                        break;
+                    case "Higher 500k":
+                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price > 500000 Order by Price ASC");                        
+                        break;
+                    default:
+                        Ps = Con.prepareStatement(sql1);
+                        Ps.setString(1, getTypee(item));
+                        break;
+                }
+                Rs = Ps.executeQuery();
+                while(Rs.next()){
+                    ListOfProducts p = new ListOfProducts(
+                        Rs.getString("ProductID"),
+                        Rs.getString("ProductName"),
+                        Rs.getString("Unit"),
+                        Rs.getInt("Price"),
+                        Rs.getInt("NoInventory"),
+                        Rs.getString("Img")
+                    );
+                    list.add(p);
+                }
+                populateJTable(list);
+            } catch (IOException | SQLException e){
+                e.printStackTrace();
+            }
+        }         
+    }//GEN-LAST:event_fillterBoxItemStateChanged
+
+    private void cardVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardVarActionPerformed
+
+    }//GEN-LAST:event_cardVarActionPerformed
 
     private void clearTable(){
         ((DefaultTableModel)ProductTable.getModel()).setNumRows(0);
@@ -913,7 +702,7 @@ public class ShowProduct extends javax.swing.JFrame {
     private Connection Con = null;
     private ResultSet Rs = null;
     private Statement St = null;
-    private String user = "kubi", pass = "28112001";
+    private String user = "sa", pass = "123456";
     private int ProdTotal = 0;
     private int bigTotal = 0;
     private int smallTotal = 0;
@@ -925,7 +714,6 @@ public class ShowProduct extends javax.swing.JFrame {
     private javax.swing.JButton AddBtn;
     private javax.swing.JTable ProductTable;
     private javax.swing.JTable ProductTable2;
-    private javax.swing.JButton RefreshBtn;
     private javax.swing.JLabel allPaymentVar;
     private javax.swing.JLabel billVar;
     private javax.swing.ButtonGroup buttonGroup1;

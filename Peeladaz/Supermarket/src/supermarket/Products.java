@@ -539,7 +539,7 @@ public class Products extends javax.swing.JFrame {
     private void priceVar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceVar1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_priceVar1ActionPerformed
-    private String getUnit(){
+    private String getTypee(){
         String res = null;
         String unit = typeVar.getSelectedItem().toString();
         switch (unit) {
@@ -577,7 +577,7 @@ public class Products extends javax.swing.JFrame {
         if(branchIDVar.getText().isEmpty() || productIDVar.getText().isEmpty() || unitVar.getText().isEmpty() || quanVar.getText().isEmpty() || nameVar1.getText().isEmpty() || priceVar1.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Missing infomation !!!");
         } else {
-            String type = getUnit();
+            String type = getTypee();
             System.out.println(type);
             Con = JDBCConnection.getConnection(user, pass);
             String sql = "EXEC pr_InsProd ?,?,?,?,?,?,?";

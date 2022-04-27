@@ -4,9 +4,8 @@ LOG ON
 ( NAME = qlbh_log, FILENAME = 'D:\CSDL\qlbh_log.ldf', SIZE = 10, FILEGROWTH = 5)*/
 
 USE qlbh_onl
-DROP DATABASE qlbh_onl
 GO
-DROP TABLE RECEIPT_DETAIL
+/*DROP TABLE RECEIPT_DETAIL
 DROP TABLE DELIVERY_NOTE
 DROP TABLE RECEIPT
 DROP TABLE STORAGE 
@@ -22,7 +21,7 @@ DROP TABLE PARTNERS
 DROP TABLE STAFF
 DROP TABLE ACCOUNT
 DROP FUNCTION AUTO_RecID
-DROP FUNCTION AUTO_ReceiptID
+DROP FUNCTION AUTO_ReceiptID*/
 GO
 CREATE FUNCTION AUTO_RecID()
 RETURNS CHAR(6)
@@ -40,6 +39,7 @@ BEGIN
 		END
 	RETURN @ID
 END
+GO
 ---------------------------------------------------
 CREATE FUNCTION AUTO_ReceiptID()
 RETURNS CHAR(6)
@@ -57,6 +57,7 @@ BEGIN
 		END
 	RETURN @ID
 END
+GO
 ---------------------------------------------------
 -- ACCOUNT
 CREATE TABLE ACCOUNT
@@ -181,7 +182,7 @@ CREATE TABLE PRODUCT
 (
 	ProductID char(6) NOT NULL PRIMARY KEY,
 	ProductName varchar(100) NOT NULL,
-	ProdTypeID char(6) NOT NULL,
+	ProdTypeID char(2) NOT NULL,
 	NoInventory int DEFAULT 0,
 	Unit varchar(30),
 	Price int,
@@ -193,7 +194,7 @@ CREATE TABLE PRODUCT
 -- PRODUCT_TYPE
 CREATE TABLE PRODUCT_TYPE
 (
-	ProdTypeID char(6) NOT NULL PRIMARY KEY,
+	ProdTypeID char(2) NOT NULL PRIMARY KEY,
 	ProdTypeName varchar(30)
 )
 
@@ -340,6 +341,7 @@ AS
 			END
 		END
 	END*/
+GO
 ---------------------------------------------------
 --Lịch sử gia hạn hợp đồng
 CREATE TRIGGER tr_RenewalRec
@@ -362,6 +364,7 @@ BEGIN
 	SELECT del.ContractID, del.StartDate, del.EndDate, del.CommissionP, GETDATE(), 'DEL'
 	FROM deleted del
 END
+GO
 ---------------------------------------------------
 CREATE TRIGGER tr_RenewalRec_UPD
 ON CONTRACTS
@@ -380,6 +383,7 @@ BEGIN
 	SELECT ins.ContractID, ins.StartDate, ins.EndDate, ins.CommissionP, GETDATE(), 'UPD'
 	FROM inserted ins
 END
+GO
 ---------------------------------------------------
 -- Inventory Update
 CREATE TRIGGER tr_InventoryUpd_INS
@@ -391,6 +395,7 @@ BEGIN
 		SELECT Quantity FROM inserted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN inserted ins ON PRODUCT.ProductID = ins.ProductID	
 END
+GO
 ---------------------------------------------------
 CREATE TRIGGER tr_InventoryUpd_DEL
 ON STORAGE
@@ -401,6 +406,7 @@ BEGIN
 		SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
 END
+GO
 ---------------------------------------------------
 -- Update Inventory_Receipt
 CREATE TRIGGER tr_InventoryReceipt_INS
@@ -412,6 +418,7 @@ BEGIN
 		SELECT Quantity FROM inserted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN inserted ins ON PRODUCT.ProductID = ins.ProductID	
 END
+GO
 ---------------------------------------------------
 CREATE TRIGGER tr_InventoryReceipt_UPD
 ON RECEIPT_DETAIL
@@ -423,6 +430,7 @@ BEGIN
 		(SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID		
 END
+GO
 ---------------------------------------------------
 CREATE TRIGGER tr_InventoryReceipt_DEL
 ON RECEIPT_DETAIL
@@ -433,6 +441,7 @@ BEGIN
 		SELECT Quantity FROM deleted WHERE ProductID = PRODUCT.ProductID
 	)FROM PRODUCT JOIN deleted del ON PRODUCT.ProductID = del.ProductID	
 END
+GO
 ---------------------------------------------------
 -- Take delivery
 CREATE TRIGGER tr_UpdReceiptStatus_Take
@@ -451,6 +460,7 @@ BEGIN
 		END
 	UPDATE RECEIPT SET ReceiptStatus = 2 WHERE ReceiptID = (SELECT ReceiptID FROM inserted)
 END
+GO
 ---------------------------------------------------
 -- Cancel delivery
 CREATE TRIGGER tr_UpdReceiptStatus_Can
@@ -469,6 +479,7 @@ BEGIN
 		END
 	UPDATE RECEIPT SET ReceiptStatus = 1 WHERE ReceiptID = @madh
 END
+GO
 ---------------------------------------------------
 set dateformat dmy
 ---------------------------------------------------
@@ -596,14 +607,14 @@ insert into CONTRACTS values('HD0004', 'DT0005','NV0002', 560000000, 180, '11/11
 insert into CONTRACTS values('HD0005', 'DT0003','NV0002', 1250000000, 180, '10/05/2022', NULL, 2, 10)
 
 -- RECEIPT
-insert into RECEIPT values('DH0001', 'KH0006', '10/12/2021', 15000,1,2)
+insert into RECEIPT values('DH0001', 'KH0006', '10/12/2021', 15000,1,1)
 insert into RECEIPT values('DH0002', 'KH0001', '01/04/2022', 15000,1,1)
 insert into RECEIPT values('DH0003', 'KH0002', '04/04/2022', 15000,0,1)
 insert into RECEIPT values('DH0004', 'KH0006', '05/04/2022', 15000,0,1)
-insert into RECEIPT values('DH0005', 'KH0004', '19/12/2021', 15000,0,2)
+insert into RECEIPT values('DH0005', 'KH0004', '19/12/2021', 15000,0,1)
 insert into RECEIPT values('DH0006', 'KH0005', '22/03/2022', 15000,0,1)
 insert into RECEIPT values('DH0007', 'KH0002', '30/03/2022', 15000,1,1)
-insert into RECEIPT values('DH0008', 'KH0006', '28/01/2022', 15000,1,2)
+insert into RECEIPT values('DH0008', 'KH0006', '28/01/2022', 15000,1,1)
 
 -- RECEIPT_DETAIL
 insert into RECEIPT_DETAIL values('DH0001', 'SP0003', 1,32000)

@@ -2,11 +2,19 @@
 GO
 ---------------------------------------------------
 --STORE PROCEDURE & TRANSACTION
-
+/*DROP PROC pr_Total
+DROP PROC pr_getReceipt
+DROP PROC pr_getReceiptByReceipt
+DROP PROC pr_getDeliveryNote
+DROP PROC pr_getProductByType
+DROP PROC pr_getProductByPartner
+DROP PROC pr_ProductUpd
+DROP PROC pr_InsProd
+DROP PROC pr_OrderConfirmation
+DROP PROC pr_addRDetail*/
+GO
 ---------------------------------------------------
 --Total
-DROP PROC pr_Total
-
 CREATE PROC	pr_Total
 	@mapg char(6), 
 	@tongtien int OUTPUT
@@ -20,17 +28,9 @@ BEGIN
 	GROUP BY DN.DeliveryCharges
 	RETURN 1
 END
-
-DECLARE @tt int 
-DECLARE @kq tinyint
-EXEC @kq = pr_Total 'DH0003', @tt OUTPUT
-IF @kq = 0
-	PRINT N'Mã phiếu giao không tồn tại'
-ELSE
-	PRINT N'Tổng tiền: ' + CAST(@tt as nvarchar(20))
+GO
 ---------------------------------------------------
 --Get receipt 
-DROP PROC pr_getReceipt
 CREATE PROC pr_getReceipt
 AS
 BEGIN
@@ -38,10 +38,9 @@ BEGIN
 	FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
 	WHERE ReceiptStatus = 1
 END
-EXEC pr_getReceipt
+GO
 ---------------------------------------------------
 --Get receipt by District
-DROP PROC pr_getReceipt
 CREATE PROC pr_getReceiptByReceipt
 	@quan varchar(30)
 AS
@@ -50,10 +49,9 @@ BEGIN
 	FROM RECEIPT R LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
 	WHERE ReceiptStatus = 1 AND C.District = @quan
 END
-EXEC pr_getReceiptByReceipt 'District 5'
+GO
 ---------------------------------------------------
 -- Get Delivery note
-DROP PROC pr_getDeliveryNote
 CREATE PROC pr_getDeliveryNote
 	@matx char(6)
 AS
@@ -62,10 +60,20 @@ BEGIN
 	FROM DELIVERY_NOTE DN LEFT JOIN RECEIPT R ON DN.ReceiptID = R.ReceiptID LEFT JOIN CUSTOMER C ON R.CustomerID = C.CustomerID 
 	WHERE ShipperID = @matx
 END
-EXEC pr_getDeliveryNote 'TX0001'
+GO
+---------------------------------------------------
+-- Get Product By Type
+CREATE PROC pr_getProductByType
+	@malsp char(2)
+AS 
+BEGIN
+	SELECT ProductID, ProductName, Unit, Price, NoInventory, Img 
+	FROM dbo.PRODUCT 
+	WHERE ProdTypeID = @malsp
+END
+GO
 ---------------------------------------------------
 -- Get Product By PartnerID
-DROP PROC pr_getProductByPartner
 CREATE PROC pr_getProductByPartner
 	@madt char(6)
 AS
@@ -74,10 +82,9 @@ BEGIN
 	FROM ((BRANCH BR JOIN STORAGE ST ON BR.BranchID = ST.BranchID) LEFT JOIN PRODUCT P ON ST.ProductID = P.ProductID) LEFT JOIN PRODUCT_TYPE PT ON P.ProdTypeID = PT.ProdTypeID
 	WHERE BR.PartnerID = @madt
 END
-EXEC pr_getProductByPartner 'DT0004'
+GO
 ---------------------------------------------------
 -- Update Product
-DROP PROC pr_ProductUpd
 CREATE PROC pr_ProductUpd
 	@macn char(6),
 	@masp char(6),
@@ -100,13 +107,13 @@ BEGIN
 	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION ProductUpd;
 	END CATCH
 END
+GO
 ---------------------------------------------------
 -- Add new products to branch
-DROP PROC pr_InsProd
 CREATE PROC pr_InsProd
 	@masp char(6), 
 	@tensp varchar(100), 
-	@malsp char(6),
+	@malsp char(2),
 	@donvi varchar(15),
 	@dongia int, 
 	@macn char(6),
@@ -117,8 +124,8 @@ BEGIN
 		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price) VALUES(@masp, @tensp, @malsp, @donvi, @dongia)
 	INSERT INTO STORAGE VALUES(@macn,@masp,@solg)	
 END 
-
-EXEC pr_InsProd
+GO
+/*EXEC pr_InsProd
 	'SP0012', 
 	'Southern Star Condensed Creamer', 
 	'07', 
@@ -128,10 +135,9 @@ EXEC pr_InsProd
 	'CN0007',20
 
 SELECT * FROM RECEIPT
-select * from RECEIPT_DETAIL where ReceiptID = 'DH0009'
+select * from RECEIPT_DETAIL where ReceiptID = 'DH0009'*/
 ---------------------------------------------------
 -- Order confirmation
-DROP PROC pr_OrderConfirmation
 CREATE PROC pr_OrderConfirmation
 	@mahd char(6),
 	@makh char(6),
@@ -141,11 +147,9 @@ AS
 BEGIN
 	INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(@mahd, @makh, GETDATE(), @phiship, @pttt)
 END 
-EXEC pr_OrderConfirmation 'DH0014','KH0005',15000,1
-update RECEIPT set ReceiptStatus = 2 where ReceiptID = 'DH0014'
+GO
 ---------------------------------------------------
 -- Add Receipt Detail
-DROP PROC pr_addRDetail
 CREATE PROC pr_addRDetail
 	@madh char(6),
 	@masp char(6),
@@ -154,5 +158,5 @@ AS
 BEGIN
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
-EXEC pr_addRDetail 'DH0014', 'SP0002', 1
+GO
 
