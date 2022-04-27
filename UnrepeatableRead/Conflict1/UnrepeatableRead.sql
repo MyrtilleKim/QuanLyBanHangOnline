@@ -1,8 +1,17 @@
-USE qlbh_onl
-GO
 
--------------------------------------------------------------------
-CREATE PROC usp_Purchase_Fix2
+CREATE PROC usp_getProductByType
+	@malsp char(2)
+AS
+BEGIN
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	BEGIN TRAN
+	EXEC pr_getProductByType '01'
+	WAITFOR DELAY '00:00:20'
+	EXEC pr_getProductByType '01'
+	COMMIT TRAN
+END
+
+CREATE PROC usp_Purchase
 	@makh char(6), 
 	@gia int, 
 	@pttt bit, 
@@ -11,7 +20,7 @@ CREATE PROC usp_Purchase_Fix2
 AS
 BEGIN
 	BEGIN TRY
-	SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 	BEGIN TRANSACTION 
 		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT
 		WAITFOR DELAY '00:00:20'
@@ -30,13 +39,4 @@ BEGIN
 	WAITFOR DELAY '00:00:20'
 	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
 	END CATCH
-END
--------------------------------------------------------------------
-CREATE PROC usp_ProductView_Fix
-AS
-BEGIN
-	SET TRANSACTION ISOLATION LEVEL READ COMMITTED
-	BEGIN TRANSACTION 
-		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT		
-	COMMIT TRANSACTION 
 END

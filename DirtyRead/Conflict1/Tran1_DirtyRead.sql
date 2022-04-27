@@ -5,6 +5,6 @@ if @kq = 0
 
 
 DECLARE @kq tinyint
-EXEC @kq = usp_Purchase_Fix 'KH0004', 12000, 0, 'SP0006', 2, 'SP0005', 5
+EXEC @kq = usp_Purchase_Fix2 'KH0004', 12000, 0, 'SP0006', 2, 'SP0005', 5
 if @kq = 0
 	PRINT 'Failed'

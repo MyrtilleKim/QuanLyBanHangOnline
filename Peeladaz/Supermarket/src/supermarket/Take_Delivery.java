@@ -320,7 +320,7 @@ public class Take_Delivery extends javax.swing.JFrame {
                 if(item == "ALL")
                     Ps = Con.prepareStatement("EXEC pr_getReceipt");
                 else{
-                    Ps = Con.prepareStatement("EXEC pr_getReceiptByReceipt ?");
+                    Ps = Con.prepareStatement("EXEC pr_getReceiptByDistrict ?");
                     Ps.setString(1, (String)fillterBox.getSelectedItem());
                 }
                 Rs = Ps.executeQuery();

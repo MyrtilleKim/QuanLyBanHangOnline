@@ -29,7 +29,7 @@ BEGIN
 	END CATCH
 END
 -------------------------------------------------------------------
-CREATE PROC usp_ProductUpdQty
+CREATE PROC usp_ProductUpd
 	@madt char(6),
 	@macn char(6),
 	@masp char(6),

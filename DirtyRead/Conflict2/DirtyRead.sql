@@ -2,6 +2,7 @@ USE qlbh_onl
 GO
 -------------------------------------------------------------------
 CREATE PROC usp_ProductUpd
+	@madt char(6),
 	@macn char(6),
 	@masp char(6),
 	@tensp varchar(100),
@@ -12,6 +13,7 @@ BEGIN
 	BEGIN TRY
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 	BEGIN TRANSACTION 
+		EXEC pr_getProductByPartner @madt
 		DECLARE @ton int
 		SET @ton = (SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp)
 		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp		

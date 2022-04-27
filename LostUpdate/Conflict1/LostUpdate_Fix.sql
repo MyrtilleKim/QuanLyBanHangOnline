@@ -1,7 +1,7 @@
 USE qlbh_onl
 GO
 -------------------------------------------------------------------
-CREATE PROC usp_Purchase_Fix
+CREATE PROC usp_Purchase_Fix3
 	@makh char(6), 
 	@gia int, 
 	@pttt bit, 
@@ -30,7 +30,7 @@ BEGIN
 	END CATCH
 END
 -------------------------------------------------------------------
-CREATE PROC usp_ProductUpdQty_Fix
+CREATE PROC usp_ProductUpd_Fix3
 	@madt char(6),
 	@macn char(6),
 	@masp char(6),
