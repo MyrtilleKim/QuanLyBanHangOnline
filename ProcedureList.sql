@@ -241,3 +241,13 @@ BEGIN
 	COMMIT TRAN
 END
 GO
+---------------------------------------------------
+CREATE PROC usp_TakeDelivery
+	@madh char(6), @matx char(6)
+AS
+BEGIN
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
+	BEGIN TRAN
+		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) values(@madh, @matx)
+	COMMIT TRAN
+END
