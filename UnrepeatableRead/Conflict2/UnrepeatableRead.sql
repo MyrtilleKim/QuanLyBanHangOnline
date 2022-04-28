@@ -6,9 +6,9 @@ AS
 BEGIN
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
 	BEGIN TRAN
-	EXEC pr_getReceiptByReceipt @quan
+	EXEC pr_getReceiptByDistrict @quan
 	WAITFOR DELAY '00:00:20'
-	EXEC pr_getReceiptByReceipt @quan
+	EXEC pr_getReceiptByDistrict @quan
 	COMMIT TRAN
 END
 

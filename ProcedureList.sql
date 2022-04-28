@@ -187,6 +187,7 @@ BEGIN
 	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
 	END CATCH
 END
+GO
 ---------------------------------------------------
 CREATE PROC usp_ProductView
 AS
@@ -249,5 +250,18 @@ BEGIN
 	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
 	BEGIN TRAN
 		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) values(@madh, @matx)
+	COMMIT TRAN
+END
+GO
+---------------------------------------------------
+CREATE PROC usp_getReceiptByDistrict
+	@quan varchar(30)
+AS
+BEGIN
+	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
+	BEGIN TRAN
+	EXEC pr_getReceiptByDistrict @quan
+	WAITFOR DELAY '00:00:20'
+	EXEC pr_getReceiptByDistrict @quan
 	COMMIT TRAN
 END
