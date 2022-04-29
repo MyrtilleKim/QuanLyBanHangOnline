@@ -1,0 +1,81 @@
+--Trans1
+CREATE
+--ALTER
+PROC USP_CyDL1.1
+	@NguoiDaiDien nvarchar(30),
+	@DiaChi nvarchar(30),
+	@MaCN
+AS
+BEGIN TRAN
+
+SET TRAN ISOLATION LEVEL READ COMMITED
+
+	IF @MaCN NOT IN (SELECT BranchID FROM BRANCH)
+	BEGIN
+		PRINT @MaCN + N'not a branch of the partner'
+		ROLLBACK TRAN
+		RETURN 1
+	END
+
+		ELSE
+		WAITFOR DELAY 'O:O:05'
+
+	BEGIN TRY	
+		UPDATE PARTNERS
+		SET Representative = @NguoiDaiDien
+		
+		UPDATE BRANCH
+		SET Addr = @DiaChi
+		WHERE BranchID = @MaCN
+	END TRY
+
+	BEGIN CATCH
+		DECLARE @ErrorMsg VARCHAR(2000)
+		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		RAISERROR(@ErrorMsg, 16,1)
+		ROLLBACK TRAN
+		RETURN
+	END CATCH
+		
+COMMIT TRAN
+GO
+
+--Trans2
+CREATE
+--ALTER
+PROC USP_CyDL2.1
+	@NguoiDaiDien nvarchar(30),
+	@DiaChi nvarchar(30),
+	@MaCN
+AS
+BEGIN TRAN
+
+SET TRAN ISOLATION LEVEL READ COMMITED
+
+	IF @MaCN NOT IN (SELECT BranchID FROM BRANCH)
+	BEGIN
+		PRINT @MaCN + N`not a branch of the partner`
+		ROLLBACK TRAN
+		RETURN 1
+	END
+		ELSE
+
+	BEGIN TRY
+		UPDATE PARTNERS
+		SET Representative = @NguoiDaiDien
+	
+		UPDATE BRANCH
+		SET Addr = @DiaChi
+		WHERE BranchID = @MaCN
+	END TRY
+
+	BEGIN CATCH
+		DECLARE @ErrorMsg VARCHAR(2000)
+		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		RAISERROR(@ErrorMsg, 16,1)
+		ROLLBACK TRAN
+		RETURN
+	END CATCH
+		
+COMMIT TRAN
+GO

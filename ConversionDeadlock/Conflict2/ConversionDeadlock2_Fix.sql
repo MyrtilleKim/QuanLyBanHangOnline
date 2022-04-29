@@ -1,0 +1,75 @@
+--Trans1
+CREATE
+--ALTER
+PROC USP_CoDL1.2
+	@NDD nvarchar(30)
+AS
+BEGIN TRAN
+
+SET TRAN ISOLATION LEVEL READ COMMITED
+
+	DECLARE @NDD_HT nvarchar(30)
+	SET @NDD_HT = (SELECT Representative FROM PARTNERS)
+	IF (@NDD = @NDD_HT)
+	BEGIN
+		PRINT N'New representative you want to change is the same as one before'
+		ROLLBACK TRAN
+		RETURN 1
+	END
+
+		ELSE
+		WAITFOR DELAY 'O:O:05'
+
+	BEGIN TRY	
+		UPDATE PARTNERS
+		SET Representative = @NDD	
+	END TRY
+
+	BEGIN CATCH
+		DECLARE @ErrorMsg VARCHAR(2000)
+		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		RAISERROR(@ErrorMsg, 16,1)
+		ROLLBACK TRAN
+		RETURN
+	END CATCH
+		
+COMMIT TRAN
+GO
+
+--Trans2
+CREATE
+--ALTER
+PROC USP_CoDL2.2
+	@DiaChi nvarchar(30)
+AS
+BEGIN TRAN
+
+SET TRAN ISOLATION LEVEL READ COMMITED
+
+	DECLARE @DiaChi_HT nvarchar(30)
+	SET @DiaChi_HT = (SELECT Addr FROM PARTNERS)
+	IF (@DiaChi = @DiaChi_HT)
+	BEGIN
+		PRINT N'New address you want to change is the same as one before'  
+		ROLLBACK TRAN
+		RETURN 1
+	END
+
+		ELSE
+		WAITFOR DELAY '0:0:05'
+
+	BEGIN TRY
+		UPDATE PARTNERS  
+		SET Addr = @DiaChi
+	END TRY
+
+	BEGIN CATCH
+		DECLARE @ErrorMsg VARCHAR(2000)
+		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		RAISERROR(@ErrorMsg, 16,1)
+		ROLLBACK TRAN
+		RETURN
+	END CATCH
+		
+COMMIT TRAN
+GO
