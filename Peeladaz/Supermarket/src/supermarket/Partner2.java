@@ -18,12 +18,12 @@ import net.proteanit.sql.DbUtils;
  *
  * @author ranco
  */
-public class Partner extends javax.swing.JFrame {
+public class Partner2 extends javax.swing.JFrame {
 
     /**
-     * Creates new form Partner
+     * Creates new form Partner2
      */
-    public Partner() {
+    public Partner2() {
         initComponents();
         SelectPartner();
         SelectBranch();
@@ -505,6 +505,14 @@ public class Partner extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void taxVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taxVarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_taxVarActionPerformed
+
+    private void branchIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_branchIDVarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_branchIDVarActionPerformed
+
     private void nameVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameVarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_nameVarActionPerformed
@@ -523,47 +531,46 @@ public class Partner extends javax.swing.JFrame {
 
     private void updateBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateBtnMouseClicked
         // TODO add your handling code here:
-        if(nameVar.getText().isEmpty() || repVar.getText().isEmpty() || teleVar.getText().isEmpty() || emailVar.getText().isEmpty() || addVar.getText().isEmpty() || noBranchVar.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Missing infomation !!!");
-        } else {
-            Con = JDBCConnection.getConnection(user, pass);
-//            String sql0 = "UPDATE PRODUCT SET ProductName = ?, Price=?, NoInventory = NoInventory + ? - (SELECT Quantity FROM STORAGE WHERE BranchID = ? AND ProductID = ?) WHERE ProductID = ?";
-            String sql1 = "UPDATE PARTNERS SET PartnerName = ?, Representative = ?, Addr = ?, Tele = ?, Email = ?, NoBranch = ? WHERE TaxCode = ?";
-            try{
-                Con.setAutoCommit(false);
-//                String masp = repVar.getText(), macn = nameVar.getText();
-                ps = Con.prepareStatement(sql1);
-                ps.setString(1, nameVar.getText());
-                ps.setString(2, repVar.getText());
-                ps.setString(3, addVar.getText());
-                ps.setString(4, teleVar.getText());
-                ps.setString(5, emailVar.getText());
-                ps.setInt(6, Integer.valueOf(noBranchVar.getText()));
-                ps.setString(7, taxVar.getText());
-         
-                PreparedStatement ps1 = Con.prepareStatement(sql1);
-                
-
-                ps.execute();
-                
-                Con.commit();
-                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");
-            } catch (Exception e){
-                e.printStackTrace();
-                try {
-                    Con.rollback();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } finally{
-                try {
-                    Con.setAutoCommit(true);
-                    Con.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+//        if(nameVar.getText().isEmpty() || repVar.getText().isEmpty() || teleVar.getText().isEmpty() || emailVar.getText().isEmpty() || addVar.getText().isEmpty() || noBranchVar.getText().isEmpty()){
+//            JOptionPane.showMessageDialog(this, "Missing infomation !!!");
+//        } else {
+//            Con = JDBCConnection.getConnection(user, pass);
+//            //            String sql0 = "UPDATE PRODUCT SET ProductName = ?, Price=?, NoInventory = NoInventory + ? - (SELECT Quantity FROM STORAGE WHERE BranchID = ? AND ProductID = ?) WHERE ProductID = ?";
+//            String sql1 = "UPDATE PARTNERS SET PartnerName = ?, Representative = ?, Addr = ?, Tele = ?, Email = ?, NoBranch = ? WHERE TaxCode = ?";
+//            try{
+//                Con.setAutoCommit(false);
+//                //                String masp = repVar.getText(), macn = nameVar.getText();
+//                ps = Con.prepareStatement(sql1);
+//                ps.setString(1, nameVar.getText());
+//                ps.setString(2, repVar.getText());
+//                ps.setString(3, addVar.getText());
+//                ps.setString(4, teleVar.getText());
+//                ps.setString(5, emailVar.getText());
+//                ps.setInt(6, Integer.valueOf(noBranchVar.getText()));
+//                ps.setString(7, taxVar.getText());
+//
+//                PreparedStatement ps1 = Con.prepareStatement(sql1);
+//
+//                ps.execute();
+//
+//                Con.commit();
+//                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");
+//            } catch (Exception e){
+//                e.printStackTrace();
+//                try {
+//                    Con.rollback();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            } finally{
+//                try {
+//                    Con.setAutoCommit(true);
+//                    Con.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
         SelectPartner();
     }//GEN-LAST:event_updateBtnMouseClicked
 
@@ -596,7 +603,6 @@ public class Partner extends javax.swing.JFrame {
         emailVar.setText(model.getValueAt(Myindex, 5).toString());
         noBranchVar.setText(model.getValueAt(Myindex, 6).toString());
         taxVar.setText(model.getValueAt(Myindex, 7).toString());
-        
 
     }//GEN-LAST:event_partnerTableMouseClicked
 
@@ -608,11 +614,6 @@ public class Partner extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_noBranchVarActionPerformed
 
-    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
-        // TODO add your handling code here:
-        System.exit(0);
-    }//GEN-LAST:event_jLabel9MouseClicked
-
     private void distVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_distVarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_distVarActionPerformed
@@ -621,45 +622,53 @@ public class Partner extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_addBranchVarActionPerformed
 
+    private void branchTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_branchTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel)branchTable.getModel();
+        int Myindex = branchTable.getSelectedRow();
+        branchIDVar.setText(model.getValueAt(Myindex, 0).toString());
+        addBranchVar.setText(model.getValueAt(Myindex, 1).toString());
+        distVar.setText(model.getValueAt(Myindex, 2).toString());
+
+    }//GEN-LAST:event_branchTableMouseClicked
+
     private void updateBtn1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_updateBtn1MouseClicked
         // TODO add your handling code here
-        if(addBranchVar.getText().isEmpty() || distVar.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Missing infomation !!!");
-        } else {
-            Con = JDBCConnection.getConnection(user, pass);
-            String sql1 = "UPDATE BRANCH SET Addr = ?, District = ? WHERE BranchID = ?";
-            try{
-                Con.setAutoCommit(false);
-//                String masp = repVar.getText(), macn = nameVar.getText();
-                ps = Con.prepareStatement(sql1);
-                ps.setString(1, addBranchVar.getText());
-                ps.setString(2, distVar.getText());
-                ps.setString(3, branchIDVar.getText());
-              
-         
-                PreparedStatement ps1 = Con.prepareStatement(sql1);
-                
-
-                ps.execute();
-                
-                Con.commit();
-                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");
-            } catch (Exception e){
-                e.printStackTrace();
-                try {
-                    Con.rollback();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } finally{
-                try {
-                    Con.setAutoCommit(true);
-                    Con.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
+//        if(addBranchVar.getText().isEmpty() || distVar.getText().isEmpty()){
+//            JOptionPane.showMessageDialog(this, "Missing infomation !!!");
+//        } else {
+//            Con = JDBCConnection.getConnection(user, pass);
+//            String sql1 = "UPDATE BRANCH SET Addr = ?, District = ? WHERE BranchID = ?";
+//            try{
+//                Con.setAutoCommit(false);
+//                //                String masp = repVar.getText(), macn = nameVar.getText();
+//                ps = Con.prepareStatement(sql1);
+//                ps.setString(1, addBranchVar.getText());
+//                ps.setString(2, distVar.getText());
+//                ps.setString(3, branchIDVar.getText());
+//
+//                PreparedStatement ps1 = Con.prepareStatement(sql1);
+//
+//                ps.execute();
+//
+//                Con.commit();
+//                JOptionPane.showMessageDialog(this, "Information have been Updated !!!");
+//            } catch (Exception e){
+//                e.printStackTrace();
+//                try {
+//                    Con.rollback();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            } finally{
+//                try {
+//                    Con.setAutoCommit(true);
+//                    Con.close();
+//                } catch (SQLException ex) {
+//                    Logger.getLogger(Products.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        }
         SelectBranch();
     }//GEN-LAST:event_updateBtn1MouseClicked
 
@@ -672,34 +681,17 @@ public class Partner extends javax.swing.JFrame {
         addBranchVar.setText("");
         distVar.setText("");
         branchIDVar.setText("");
-        
+
     }//GEN-LAST:event_clearBtn1MouseClicked
 
     private void clearBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtn1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_clearBtn1ActionPerformed
 
-    private void taxVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taxVarActionPerformed
+    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_taxVarActionPerformed
-
-    private void branchTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_branchTableMouseClicked
-        // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel)branchTable.getModel();
-        int Myindex = branchTable.getSelectedRow();
-        branchIDVar.setText(model.getValueAt(Myindex, 0).toString());
-        addBranchVar.setText(model.getValueAt(Myindex, 1).toString());
-        distVar.setText(model.getValueAt(Myindex, 2).toString());
-        
-    }//GEN-LAST:event_branchTableMouseClicked
-
-    private void branchIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_branchIDVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_branchIDVarActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
+        System.exit(0);
+    }//GEN-LAST:event_jLabel9MouseClicked
     public void SelectPartner() {
         Con = JDBCConnection.getConnection(user, pass);
         try{
@@ -710,7 +702,7 @@ public class Partner extends javax.swing.JFrame {
             e.printStackTrace();
         }
     } 
-    
+
     public void SelectBranch() {
         Con = JDBCConnection.getConnection(user, pass);
         try{
@@ -721,6 +713,9 @@ public class Partner extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -735,20 +730,20 @@ public class Partner extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Partner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Partner2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Partner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Partner2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Partner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Partner2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Partner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Partner2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Partner().setVisible(true);
+                new Partner2().setVisible(true);
             }
         });
     }
