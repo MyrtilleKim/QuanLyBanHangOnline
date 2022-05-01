@@ -79,7 +79,6 @@ public class ShowProduct extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
@@ -572,7 +571,7 @@ public class ShowProduct extends javax.swing.JFrame {
     private void fillterBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fillterBoxItemStateChanged
         try {
             // TODO add your handling code here:
-            Con = JDBCConnection.getConnection("sa", "123456");
+            Con = JDBCConnection.getConnection(user, pass);
             Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             PreparedStatement Ps = null;
             String item = (String) evt.getItem();

@@ -283,7 +283,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
     }
-    private String user = "sa", pass = "123456";
+    private String user = "sa", pass = "123";
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Email;
     private javax.swing.JPasswordField Pass;
