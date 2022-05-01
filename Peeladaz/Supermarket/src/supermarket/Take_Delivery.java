@@ -21,7 +21,8 @@ public class Take_Delivery extends javax.swing.JFrame {
     /**
      * Creates new form Take_Delivery
      */
-    public Take_Delivery() {
+    public Take_Delivery(String ID) {
+        id = ID;
         initComponents();
         SelectReceipt();
         SelectDelivery();
@@ -171,8 +172,8 @@ public class Take_Delivery extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel6)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(137, 137, 137)))
+                                    .addComponent(fillterBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(71, 71, 71)))
                             .addGap(86, 86, 86))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -260,7 +261,7 @@ public class Take_Delivery extends javax.swing.JFrame {
 
     private void returnBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_returnBtnMouseClicked
         // TODO add your handling code here:
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         String sql = "DELETE DELIVERY_NOTE WHERE ReceiptID = ?";
         try{
             Ps = Con.prepareStatement(sql);
@@ -275,12 +276,12 @@ public class Take_Delivery extends javax.swing.JFrame {
 
     private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
         // TODO add your handling code here:
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         String sql = "INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(?,?)";
         try{
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,ReceiptID);
-            Ps.setString(2,"TX0001");
+            Ps.setString(2,id);
             Ps.execute();
             SelectReceipt();
             SelectDelivery();
@@ -312,7 +313,7 @@ public class Take_Delivery extends javax.swing.JFrame {
 
     private void fillterBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fillterBoxItemStateChanged
         // TODO add your handling code here:
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         String item = (String) evt.getItem();
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             System.out.println(item);
@@ -332,7 +333,7 @@ public class Take_Delivery extends javax.swing.JFrame {
     }//GEN-LAST:event_fillterBoxItemStateChanged
     ArrayList<String> numdata = new ArrayList<String>();String ReceiptID,ReceiptID1;    
     public void SelectReceipt() {
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         String sql = "EXEC pr_getReceipt";
         try{
             Ps = Con.prepareStatement(sql);
@@ -344,11 +345,11 @@ public class Take_Delivery extends javax.swing.JFrame {
     }
     
     public void SelectDelivery() {
-        Con = JDBCConnection.getConnection("sa", "123456");
+        Con = JDBCConnection.getConnection(user, pass);
         String sql = "EXEC pr_getDeliveryNote ?";
         try{
             Ps = Con.prepareStatement(sql);
-            Ps.setString(1,"TX0001");
+            Ps.setString(1,id);
             Rs = Ps.executeQuery();
             deliveryTable.setModel(DbUtils.resultSetToTableModel(Rs));
         } catch (Exception e){
@@ -358,40 +359,42 @@ public class Take_Delivery extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Take_Delivery().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(Take_Delivery.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new Take_Delivery().setVisible(true);
+//            }
+//        });
+//    }
     private Connection Con = null;
     private PreparedStatement Ps = null;
     private ResultSet Rs = null;
+    private String user = "TX", pass = "TX";
+    private String id;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton confirmBtn;
     private javax.swing.JTable deliveryTable;

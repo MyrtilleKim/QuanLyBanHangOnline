@@ -72,7 +72,6 @@ BEGIN
 	WHERE ProdTypeID = @malsp
 END
 GO
-
 ---------------------------------------------------
 -- Get Product By PartnerID
 CREATE PROC pr_getProductByPartner

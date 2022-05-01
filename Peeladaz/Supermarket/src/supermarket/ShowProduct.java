@@ -32,9 +32,11 @@ public class ShowProduct extends javax.swing.JFrame {
 
     /**
      * Creates new form ShowProduct
+     * @param ID
      * @throws java.io.IOException
      */
-    public ShowProduct() throws IOException {
+    public ShowProduct(String ID) throws IOException {
+        this.id = ID;
         initComponents();
         populateJTable(new QueryForProduct().BindTable(user, pass));
     }
@@ -418,7 +420,7 @@ public class ShowProduct extends javax.swing.JFrame {
     private void confirmBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_confirmBtnMouseClicked
 
         try{                                        
-            String CustomerID = "KH0002";
+            String CustomerID = this.id;
             Receipt receipt = new Receipt(getReceiptID(), CustomerID, feeDelivery, cashAndCard, ListProd);
             Con = JDBCConnection.getConnection(user, pass);
             String sql0 = "INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(?, ?, GETDATE(), ?, ?)";
@@ -444,9 +446,11 @@ public class ShowProduct extends javax.swing.JFrame {
                     ps1.execute();
                 }                             
                 Con.commit();
-                JOptionPane.showMessageDialog(this, "Purchase successfully");  
+                JOptionPane.showMessageDialog(this, "Purchase successfully !!!");  
+                clearBillBtn.doClick();
             }catch(Exception e){
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Purchase failed !!!");  
                 Con.rollback();
             }finally{
                     Con.setAutoCommit(true);
@@ -663,52 +667,53 @@ public class ShowProduct extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new ShowProduct().setVisible(true);
-                } catch (IOException ex) {
-                    Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });   
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(ShowProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    new ShowProduct().setVisible(true);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });   
+//    }
     private Connection Con = null;
     private ResultSet Rs = null;
     private Statement St = null;
-    private String user = "sa", pass = "123456";
+    private String user = "KH", pass = "KH";
     private int ProdTotal = 0;
     private int bigTotal = 0;
     private int smallTotal = 0;
     private int numberOfProduct = 0;
     private boolean cashAndCard = true;
     private int feeDelivery = 0;
+    private String id;
     private ArrayList<Receipt_Detail> ListProd = new ArrayList<Receipt_Detail>();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddBtn;

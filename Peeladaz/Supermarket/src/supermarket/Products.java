@@ -4,6 +4,7 @@
  */
 package supermarket;
 
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -30,16 +31,12 @@ public class Products extends javax.swing.JFrame {
     /**
      * Creates new form Products
      */
-    public Products() {
+    public Products(String ID) {
+        id = ID;
         initComponents();
         SelectProduct();
     }
-    
-    Connection Con = null;
-    Statement St = null;
-    PreparedStatement ps = null;
-    ResultSet Rs = null;
-    String user = "sa", pass = "123456";
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,11 +91,6 @@ public class Products extends javax.swing.JFrame {
 
         branchIDVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         branchIDVar.setForeground(new java.awt.Color(153, 153, 255));
-        branchIDVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                branchIDVarActionPerformed(evt);
-            }
-        });
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(153, 153, 255));
@@ -106,11 +98,6 @@ public class Products extends javax.swing.JFrame {
 
         productIDVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         productIDVar.setForeground(new java.awt.Color(153, 153, 255));
-        productIDVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                productIDVarActionPerformed(evt);
-            }
-        });
 
         jLabel7.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(153, 153, 255));
@@ -118,11 +105,6 @@ public class Products extends javax.swing.JFrame {
 
         unitVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         unitVar.setForeground(new java.awt.Color(153, 153, 255));
-        unitVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                unitVarActionPerformed(evt);
-            }
-        });
 
         jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(153, 153, 255));
@@ -130,11 +112,6 @@ public class Products extends javax.swing.JFrame {
 
         quanVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         quanVar.setForeground(new java.awt.Color(153, 153, 255));
-        quanVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                quanVarActionPerformed(evt);
-            }
-        });
 
         updateBtn.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         updateBtn.setForeground(new java.awt.Color(153, 153, 255));
@@ -143,11 +120,6 @@ public class Products extends javax.swing.JFrame {
         updateBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 updateBtnMouseClicked(evt);
-            }
-        });
-        updateBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateBtnActionPerformed(evt);
             }
         });
 
@@ -160,21 +132,11 @@ public class Products extends javax.swing.JFrame {
                 addBtnMouseClicked(evt);
             }
         });
-        addBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addBtnActionPerformed(evt);
-            }
-        });
 
         jButton3.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jButton3.setForeground(new java.awt.Color(153, 153, 255));
         jButton3.setText("Delete");
         jButton3.setBorder(new javax.swing.border.MatteBorder(null));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
 
         clearBtn.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         clearBtn.setForeground(new java.awt.Color(153, 153, 255));
@@ -183,11 +145,6 @@ public class Products extends javax.swing.JFrame {
         clearBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 clearBtnMouseClicked(evt);
-            }
-        });
-        clearBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearBtnActionPerformed(evt);
             }
         });
 
@@ -231,19 +188,9 @@ public class Products extends javax.swing.JFrame {
 
         nameVar1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         nameVar1.setForeground(new java.awt.Color(153, 153, 255));
-        nameVar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameVar1ActionPerformed(evt);
-            }
-        });
 
         priceVar1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         priceVar1.setForeground(new java.awt.Color(153, 153, 255));
-        priceVar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                priceVar1ActionPerformed(evt);
-            }
-        });
 
         jLabel10.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel10.setForeground(new java.awt.Color(153, 153, 255));
@@ -255,11 +202,6 @@ public class Products extends javax.swing.JFrame {
 
         typeVar.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         typeVar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Stationery", "Electric Appliances", "Kitchen Utensils & Appliances", "Phone Accessories", "Detergents", "Beauty & Personal Care", "Food", "Beverage" }));
-        typeVar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                typeVarActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -409,34 +351,6 @@ public class Products extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_addBtnActionPerformed
-
-    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_updateBtnActionPerformed
-
-    private void quanVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quanVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_quanVarActionPerformed
-
-    private void unitVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unitVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_unitVarActionPerformed
-
-    private void productIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productIDVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_productIDVarActionPerformed
-
-    private void branchIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_branchIDVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_branchIDVarActionPerformed
     public Boolean UndoAction(){
         final JOptionPane msg = new JOptionPane("Do you want to undo your action?", JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
         final JDialog dlg = msg.createDialog("UNDO");
@@ -531,44 +445,20 @@ public class Products extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.exit(0);
     }//GEN-LAST:event_jLabel9MouseClicked
-
-    private void nameVar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameVar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameVar1ActionPerformed
-
-    private void priceVar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priceVar1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_priceVar1ActionPerformed
     private String getTypee(){
         String res = null;
         String unit = typeVar.getSelectedItem().toString();
         switch (unit) {
-            case "Stationery":
-                res = "01";
-                break;
-            case "Electric Appliances":
-                res = "02";
-                break;
-            case "Kitchen Utensils & Appliances":
-                res = "03";
-                break;
-            case "Phone Accessories":
-                res = "04";
-                break;
-            case "Detergents":
-                res = "05";
-                break;
-            case "Beauty & Personal Care":
-                res = "06";
-                break;
-            case "Food":
-                res = "07";
-                break;
-            case "Beverage":
-                res = "08";
-                break;
-            default:
-                break;
+            case "Stationery" -> res = "01";
+            case "Electric Appliances" -> res = "02";
+            case "Kitchen Utensils & Appliances" -> res = "03";
+            case "Phone Accessories" -> res = "04";
+            case "Detergents" -> res = "05";
+            case "Beauty & Personal Care" -> res = "06";
+            case "Food" -> res = "07";
+            case "Beverage" -> res = "08";
+            default -> {
+            }
         }
         return res;
     }
@@ -592,20 +482,12 @@ public class Products extends javax.swing.JFrame {
                 ps.setInt(7, Integer.valueOf(quanVar.getText()));                            
                 ps.execute();
                 JOptionPane.showMessageDialog(this, "Product have just been added !!!");        
-            } catch (Exception e){
+            } catch (HeadlessException | NumberFormatException | SQLException e){
                 e.printStackTrace();
             }
             SelectProduct();
         }
     }//GEN-LAST:event_addBtnMouseClicked
-
-    private void typeVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeVarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_typeVarActionPerformed
-
-    private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_clearBtnActionPerformed
 
     private void clearBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_clearBtnMouseClicked
         // TODO add your handling code here:
@@ -620,49 +502,56 @@ public class Products extends javax.swing.JFrame {
 
     public void SelectProduct() {
         Con = JDBCConnection.getConnection(user, pass);
+        String sql = "EXEC pr_getProductByPartner ?";
         try{
-            St = (Statement) Con.createStatement();
-            Rs = St.executeQuery("EXEC pr_getProductByPartner 'DT0003'");
+            ps = Con.prepareStatement(sql);
+            ps.setString(1,id);
+            Rs = ps.executeQuery();            
             productTable.setModel(DbUtils.resultSetToTableModel(Rs));
-        } catch (Exception e){
+        } catch (SQLException e){
             e.printStackTrace();
         }
     } 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Products().setVisible(true);
-            }
-        });
-    }
-
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(Products.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new Products().setVisible(true);
+//            }
+//        });
+//    }
+    private Connection Con = null;
+    private Statement St = null;
+    private PreparedStatement ps = null;
+    private ResultSet Rs = null;
+    private String user = "DT", pass = "DT";
+    private String id;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
     private javax.swing.JTextField branchIDVar;

@@ -542,7 +542,7 @@ insert into BRANCH values('CN0011','DT0002','454 Tan Ki Tan Quy Street', 'Binh C
 insert into BRANCH values('CN0012','DT0002','87 Bach Dang Street', 'District 1')
 
 -- STAFF
-insert into STAFF values('NV0001','Nguyen Nhu Nhat','nnnhut@gmail.com')
+insert into STAFF values('NV0001','Nguyen Nhu Nhut','nnnhut@gmail.com')
 insert into STAFF values('NV0002','Le Thi Phi Yen','ltpyen@gmail.com')
 insert into STAFF values('NV0003','Nguyen Van B','nvb@gmail.com')
 insert into STAFF values('NV0004','Ngo Thanh Tuan','nttuan@gmail.com')
