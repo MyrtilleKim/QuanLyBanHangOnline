@@ -412,6 +412,7 @@ public class ShowProduct extends javax.swing.JFrame {
     }//GEN-LAST:event_cashVarActionPerformed
     private String getReceiptID() throws SQLException{
         Con = JDBCConnection.getConnection(user, pass);
+        Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
         CallableStatement cstmt = Con.prepareCall("{? = call AUTO_ReceiptID()}");
         cstmt.registerOutParameter(1, Types.CHAR);
         cstmt.execute();
@@ -423,6 +424,7 @@ public class ShowProduct extends javax.swing.JFrame {
             String CustomerID = this.id;
             Receipt receipt = new Receipt(getReceiptID(), CustomerID, feeDelivery, cashAndCard, ListProd);
             Con = JDBCConnection.getConnection(user, pass);
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             String sql0 = "INSERT INTO RECEIPT (ReceiptID,CustomerID,OrderDate,DeliveryCharges,PaymentMethod) VALUES(?, ?, GETDATE(), ?, ?)";
             String sql1 = "INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(?,?,?,?)";
             PreparedStatement ps0 = null;
@@ -568,51 +570,56 @@ public class ShowProduct extends javax.swing.JFrame {
         return res;
     }
     private void fillterBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fillterBoxItemStateChanged
-        // TODO add your handling code here:
-        Con = JDBCConnection.getConnection("sa", "123456");
-        PreparedStatement Ps = null;
-        String item = (String) evt.getItem();
-        ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
-        String sql1 = "EXEC pr_getProductByType ?";
-        String sql0 = "SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT";
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            System.out.println(item);
-            try{  
-                switch (item) {
-                    case "ALL":
-                        Ps = Con.prepareStatement(sql0);
-                        break;
-                    case "Lower 50k":
-                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price < 50000 Order by Price ASC");
-                        break;
-                    case "50k to 500k":
-                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price >= 50000 and Price <= 500000 Order by Price ASC");                        
-                        break;
-                    case "Higher 500k":
-                        Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price > 500000 Order by Price ASC");                        
-                        break;
-                    default:
-                        Ps = Con.prepareStatement(sql1);
-                        Ps.setString(1, getTypee(item));
-                        break;
+        try {
+            // TODO add your handling code here:
+            Con = JDBCConnection.getConnection("sa", "123456");
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
+            PreparedStatement Ps = null;
+            String item = (String) evt.getItem();
+            ArrayList<ListOfProducts> list = new ArrayList<ListOfProducts>();
+            String sql1 = "EXEC pr_getProductByType ?";
+            String sql0 = "SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT";
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                System.out.println(item);
+                try{
+                    switch (item) {
+                        case "ALL":
+                            Ps = Con.prepareStatement(sql0);
+                            break;
+                        case "Lower 50k":
+                            Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price < 50000 Order by Price ASC");
+                            break;
+                        case "50k to 500k":
+                            Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price >= 50000 and Price <= 500000 Order by Price ASC");
+                            break;
+                        case "Higher 500k":
+                            Ps = Con.prepareStatement("select ProductID, ProductName, Unit, Price, NoInventory, Img from dbo.PRODUCT WHERE Price > 500000 Order by Price ASC");
+                            break;
+                        default:
+                            Ps = Con.prepareStatement(sql1);
+                            Ps.setString(1, getTypee(item));
+                            break;
+                    }
+                    Rs = Ps.executeQuery();
+                    while(Rs.next()){
+                        ListOfProducts p = new ListOfProducts(
+                                Rs.getString("ProductID"),
+                                Rs.getString("ProductName"),
+                                Rs.getString("Unit"),
+                                Rs.getInt("Price"),
+                                Rs.getInt("NoInventory"),
+                                Rs.getString("Img")
+                        );
+                        list.add(p);
+                    }
+                    populateJTable(list);
+                } catch (IOException | SQLException e){
+                    e.printStackTrace();
                 }
-                Rs = Ps.executeQuery();
-                while(Rs.next()){
-                    ListOfProducts p = new ListOfProducts(
-                        Rs.getString("ProductID"),
-                        Rs.getString("ProductName"),
-                        Rs.getString("Unit"),
-                        Rs.getInt("Price"),
-                        Rs.getInt("NoInventory"),
-                        Rs.getString("Img")
-                    );
-                    list.add(p);
-                }
-                populateJTable(list);
-            } catch (IOException | SQLException e){
-                e.printStackTrace();
             }
-        }         
+        } catch (SQLException ex) {         
+            Logger.getLogger(ShowProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_fillterBoxItemStateChanged
 
     private void cardVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cardVarActionPerformed
