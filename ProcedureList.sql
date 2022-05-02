@@ -117,11 +117,12 @@ CREATE PROC pr_InsProd
 	@donvi varchar(15),
 	@dongia int, 
 	@macn char(6),
-	@solg int
+	@solg int,
+	@img varchar(200)
 AS
 BEGIN
 	IF NOT EXISTS(SELECT * FROM PRODUCT WHERE ProductID = @masp)
-		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price) VALUES(@masp, @tensp, @malsp, @donvi, @dongia)
+		INSERT INTO PRODUCT (ProductID,ProductName,ProdTypeID,Unit,Price,Img) VALUES(@masp, @tensp, @malsp, @donvi, @dongia,@img)
 	INSERT INTO STORAGE VALUES(@macn,@masp,@solg)	
 END 
 GO
