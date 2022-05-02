@@ -70,6 +70,8 @@ public class Products extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         typeVar = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
+        imgVar = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -203,6 +205,13 @@ public class Products extends javax.swing.JFrame {
         typeVar.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         typeVar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Stationery", "Electric Appliances", "Kitchen Utensils & Appliances", "Phone Accessories", "Detergents", "Beauty & Personal Care", "Food", "Beverage" }));
 
+        jLabel12.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(153, 153, 255));
+        jLabel12.setText("IMG");
+
+        imgVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        imgVar.setForeground(new java.awt.Color(153, 153, 255));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -250,7 +259,11 @@ public class Products extends javax.swing.JFrame {
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(44, 44, 44)
-                                .addComponent(unitVar, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(unitVar, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addGap(34, 34, 34)
+                                .addComponent(imgVar, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(165, 165, 165)
@@ -287,7 +300,10 @@ public class Products extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(typeVar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(imgVar, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel12)))
                 .addGap(40, 40, 40)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -298,7 +314,7 @@ public class Products extends javax.swing.JFrame {
                 .addComponent(jLabel11)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         jLabel9.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
@@ -330,7 +346,7 @@ public class Products extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -435,11 +451,12 @@ public class Products extends javax.swing.JFrame {
         branchIDVar.setText(model.getValueAt(Myindex, 0).toString());
         productIDVar.setText(model.getValueAt(Myindex, 1).toString());
         nameVar1.setText(model.getValueAt(Myindex, 2).toString());
+        typeVar.setSelectedItem(model.getValueAt(Myindex, 3).toString());
         quanVar.setText(model.getValueAt(Myindex, 4).toString());
         priceVar1.setText(model.getValueAt(Myindex, 5).toString());
         unitVar.setText(model.getValueAt(Myindex, 6).toString());
-        
-
+        imgVar.setText(model.getValueAt(Myindex, 7).toString());
+       
     }//GEN-LAST:event_productTableMouseClicked
     private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
         // TODO add your handling code here:
@@ -556,9 +573,11 @@ public class Products extends javax.swing.JFrame {
     private javax.swing.JButton addBtn;
     private javax.swing.JTextField branchIDVar;
     private javax.swing.JButton clearBtn;
+    private javax.swing.JTextField imgVar;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
