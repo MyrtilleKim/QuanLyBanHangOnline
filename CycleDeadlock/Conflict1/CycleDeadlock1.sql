@@ -1,18 +1,20 @@
+use qlbh_onl
+go
 --Trans1
 CREATE
 --ALTER
-PROC USP_CyDL1.1
-	@NguoiDaiDien nvarchar(30),
+PROC USP_CyDL1
+	@NguoiDaiDien varchar(100),
 	@DiaChi nvarchar(30),
-	@MaCN
+	@MaCN char(6)
 AS
+BEGIN 
 BEGIN TRAN
-
 SET TRAN ISOLATION LEVEL REPEATABLE READ
 
 	IF @MaCN NOT IN (SELECT BranchID FROM BRANCH)
 	BEGIN
-		PRINT @MaCN + N'not a branch of the partner'
+		PRINT @MaCN + 'not a branch of the partner'
 		ROLLBACK TRAN
 		RETURN 1
 	END
@@ -23,7 +25,7 @@ SET TRAN ISOLATION LEVEL REPEATABLE READ
 		UPDATE PARTNERS
 		SET Representative = @NguoiDaiDien
 		
-		WAITFOR DELAY 'O:O:05'
+		WAITFOR DELAY '0:0:05'
 		
 		UPDATE BRANCH
 		SET Addr = @DiaChi
@@ -39,15 +41,16 @@ SET TRAN ISOLATION LEVEL REPEATABLE READ
 	END CATCH
 		
 COMMIT TRAN
+END
 GO
 
 --Trans2
 CREATE
 --ALTER
-PROC USP_CyDL2.1
+PROC USP_CyDL2
 	@NguoiDaiDien nvarchar(30),
 	@DiaChi nvarchar(30),
-	@MaCN
+	@MaCN char(6)
 AS
 BEGIN TRAN
 
