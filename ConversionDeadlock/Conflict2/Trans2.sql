@@ -1,0 +1,9 @@
+USE qlbh_onl
+GO
+
+--SELECT * FROM PARTNERS
+
+--CHẠY TRANS 2
+EXEC USP_CoDL2 '12 District', 'DT0001'
+
+--SELECT * FROM PARTNERS

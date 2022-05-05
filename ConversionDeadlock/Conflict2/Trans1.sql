@@ -1,0 +1,10 @@
+USE qlbh_onl
+GO
+
+--SELECT * FROM PARTNERS
+
+--CHẠY TRANS 1
+EXEC USP_CoDL1 'Le Thien Kim', 'DT0001'
+
+--SELECT * FROM PARTNERS
+
