@@ -1,56 +1,68 @@
+USE qlbh_onl
+GO
+
+DROP PROC USP_CoDL1
+DROP PROC USP_CoDL2
+GO
+
 --Trans1
 CREATE
 --ALTER
-PROC USP_CoDL1.2
-	@NDD nvarchar(30)
+PROC USP_CoDL1
+	@NDD varchar(100),
+	@MaDT char(6)
 AS
+BEGIN
 BEGIN TRAN
 
 SET TRAN ISOLATION LEVEL REPEATABLE READ
 
-	DECLARE @NDD_HT nvarchar(30)
-	SET @NDD_HT = (SELECT Representative FROM PARTNERS)
+	DECLARE @NDD_HT varchar(100)
+	SET @NDD_HT = (SELECT Representative FROM PARTNERS WHERE PartnerID = @MaDT)
 	IF (@NDD = @NDD_HT)
 	BEGIN
-		PRINT N'New representative you want to change is the same as one before'
+		PRINT 'New representative you want to change is the same as one before'
 		ROLLBACK TRAN
 		RETURN 1
 	END
 
 		ELSE
-		WAITFOR DELAY 'O:O:05'
+		WAITFOR DELAY '0:0:05'
 
 	BEGIN TRY	
 		UPDATE PARTNERS
-		SET Representative = @NDD	
+		SET Representative = @NDD
+		WHERE PartnerID = @MaDT	
 	END TRY
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN
 	END CATCH
 		
 COMMIT TRAN
+END
 GO
 
 --Trans2
 CREATE
 --ALTER
-PROC USP_CoDL2.2
-	@DiaChi nvarchar(30)
+PROC USP_CoDL2
+	@DiaChi varchar(50),
+	@MaDT char(6)
 AS
 BEGIN TRAN
 
 SET TRAN ISOLATION LEVEL REPEATABLE READ
 
-	DECLARE @DiaChi_HT nvarchar(30)
-	SET @DiaChi_HT = (SELECT Addr FROM PARTNERS)
+	DECLARE @DiaChi_HT varchar(50)
+	SET @DiaChi_HT = (SELECT Addr FROM PARTNERS WHERE PartnerID = @MaDT)
 	IF (@DiaChi = @DiaChi_HT)
 	BEGIN
-		PRINT N'New address you want to change is the same as one before'  
+		PRINT 'New address you want to change is the same as one before'  
 		ROLLBACK TRAN
 		RETURN 1
 	END
@@ -61,11 +73,12 @@ SET TRAN ISOLATION LEVEL REPEATABLE READ
 	BEGIN TRY
 		UPDATE PARTNERS  
 		SET Addr = @DiaChi
+		WHERE PartnerID = @MaDT
 	END TRY
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN

@@ -1,13 +1,17 @@
-use qlbh_onl
+USE qlbh_onl
 GO
---DROP PROC USP_CyDL1
---DROP PROC USP_CyDL2
+
+DROP PROC USP_CyDL1
+DROP PROC USP_CyDL2
+GO
+
 --Trans1
 CREATE
 --ALTER
 PROC USP_CyDL1
 	@NguoiDaiDien nvarchar(30),
 	@DiaChi nvarchar(30),
+	@MaDT char(6),
 	@MaCN char(6)
 AS
 BEGIN
@@ -17,17 +21,18 @@ SET TRAN ISOLATION LEVEL READ COMMITTED
 
 	IF @MaCN NOT IN (SELECT BranchID FROM BRANCH)
 	BEGIN
-		PRINT @MaCN + N'not a branch of the partner'
+		PRINT @MaCN + 'not a branch of the partner'
 		ROLLBACK TRAN
 		RETURN 1
 	END
 
 		ELSE
-		WAITFOR DELAY '0:0:05'
+		WAITFOR DELAY '0:0:01'
 
 	BEGIN TRY	
 		UPDATE PARTNERS
 		SET Representative = @NguoiDaiDien
+		WHERE PartnerID = @MaDT
 		
 		UPDATE BRANCH
 		SET Addr = @DiaChi
@@ -36,7 +41,7 @@ SET TRAN ISOLATION LEVEL READ COMMITTED
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN
@@ -52,6 +57,7 @@ CREATE
 PROC USP_CyDL2
 	@NguoiDaiDien nvarchar(30),
 	@DiaChi nvarchar(30),
+	@MaDT char(6),
 	@MaCN char(6)
 AS
 BEGIN TRAN
@@ -69,6 +75,7 @@ SET TRAN ISOLATION LEVEL READ COMMITTED
 	BEGIN TRY
 		UPDATE PARTNERS
 		SET Representative = @NguoiDaiDien
+		WHERE PartnerID = @MaDT
 	
 		UPDATE BRANCH
 		SET Addr = @DiaChi
@@ -77,7 +84,7 @@ SET TRAN ISOLATION LEVEL READ COMMITTED
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN

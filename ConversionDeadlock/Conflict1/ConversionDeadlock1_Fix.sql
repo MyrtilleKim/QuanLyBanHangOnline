@@ -1,71 +1,84 @@
+USE qlbh_onl
+GO
+
+DROP PROC USP_CoDL1
+DROP PROC USP_CoDL2
+GO
 --Trans1
 CREATE
 --ALTER
-PROC USP_CoDL1.1
-	@GiaSP int
+PROC USP_CoDL1
+	@GiaSP int,
+	@MaSP char(6)
 AS
+BEGIN
 BEGIN TRAN
 
-SET TRAN ISOLATION LEVEL READ COMMITED
+SET TRAN ISOLATION LEVEL READ COMMITTED
 
 	DECLARE @GiaSP_HT int
-	SET @GiaSP_HT =(SELECT Price FROM PRODUCT)
+	SET @GiaSP_HT =(SELECT Price FROM PRODUCT WHERE ProductID = @MaSP)
 	IF (@GiaSP = @GiaSP_HT)
 	BEGIN
-		PRINT N'New product price you want to change is the same as one before'
+		PRINT 'New product price you want to change is the same as one before'
 		ROLLBACK TRAN
 		RETURN 1
 	END
 
 		ELSE
-		WAITFOR DELAY 'O:O:05'
+		WAITFOR DELAY '0:0:01'
 
 	BEGIN TRY	
 		UPDATE PRODUCT
-		SET Price = @GiaSP	
+		SET Price = @GiaSP
+		WHERE ProductID = @MaSP	
 	END TRY
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN
 	END CATCH
 		
 COMMIT TRAN
+END
 GO
 
 --Trans2
 CREATE
 --ALTER
-PROC USP_CoDL2.1
-	@TenSP nvarchar(30)
+PROC USP_CoDL2
+	@TenSP varchar(100),
+	@MaSP char(6)
+
 AS
 BEGIN TRAN
 
-SET TRAN ISOLATION LEVEL REPEATABLE READ
+SET TRAN ISOLATION LEVEL READ COMMITTED
 
 	DECLARE @TenSP_HT nvarchar(30)
-	SET @TenSP_HT = (SELECT ProductName FROM PRODUCT)
+	SET @TenSP_HT = (SELECT ProductName FROM PRODUCT WHERE ProductID = @MaSP)
 	IF (@TenSP = @TenSP_HT)
 	BEGIN
-		PRINT N'New product name you want to change is the same as one before'  
+		PRINT 'New product name you want to change is the same as one before'  
 		ROLLBACK TRAN
 		RETURN 1
 	END
 
 		ELSE
-		WAITFOR DELAY '0:0:05'
+		WAITFOR DELAY '0:0:01'
 
 	BEGIN TRY
 		UPDATE PRODUCT
 		SET ProductName = @TenSP
+		WHERE ProductID = @MaSP
 	END TRY
 
 	BEGIN CATCH
 		DECLARE @ErrorMsg VARCHAR(2000)
-		SELECT @ErrorMsg = N'ERROR: ' + ERROR_MESSAGE()
+		SELECT @ErrorMsg = 'ERROR: ' + ERROR_MESSAGE()
 		RAISERROR(@ErrorMsg, 16,1)
 		ROLLBACK TRAN
 		RETURN
