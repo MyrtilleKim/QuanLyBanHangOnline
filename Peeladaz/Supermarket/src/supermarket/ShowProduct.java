@@ -428,6 +428,7 @@ public class ShowProduct extends javax.swing.JFrame {
             String sql1 = "INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(?,?,?,?)";
             PreparedStatement ps0 = null;
             PreparedStatement ps1 = null;
+            
             try{
                 Con.setAutoCommit(false);
                 ps0 = Con.prepareStatement(sql0);

@@ -75,7 +75,6 @@ public class Products extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1165, 720));
@@ -347,7 +346,7 @@ public class Products extends javax.swing.JFrame {
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -400,9 +399,11 @@ public class Products extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Missing infomation !!!");
         } else {
             Con = JDBCConnection.getConnection(user, pass);
+            
             String sql0 = "UPDATE PRODUCT SET ProductName = ?, Price=?, NoInventory = NoInventory + ? - (SELECT Quantity FROM STORAGE WHERE BranchID = ? AND ProductID = ?) WHERE ProductID = ?";
             String sql1 = "UPDATE STORAGE SET Quantity = ? WHERE BranchID = ? AND ProductID = ?";
             try{
+                Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
                 Con.setAutoCommit(false);
                 String masp = productIDVar.getText(), macn = branchIDVar.getText();
                 ps = Con.prepareStatement(sql0);

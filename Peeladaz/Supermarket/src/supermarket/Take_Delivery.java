@@ -57,7 +57,6 @@ public class Take_Delivery extends javax.swing.JFrame {
             jLabel12 = new javax.swing.JLabel();
 
             setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-            setUndecorated(true);
 
             jPanel1.setBackground(new java.awt.Color(153, 153, 255));
             jPanel1.setPreferredSize(new java.awt.Dimension(1165, 720));
@@ -240,7 +239,7 @@ public class Take_Delivery extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addComponent(jLabel12)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
                     .addGap(20, 20, 20))
             );
 
@@ -264,6 +263,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         Con = JDBCConnection.getConnection(user, pass);
         String sql = "DELETE DELIVERY_NOTE WHERE ReceiptID = ?";
         try{
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,ReceiptID1);
             Ps.execute();
@@ -279,6 +279,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         Con = JDBCConnection.getConnection(user, pass);
         String sql = "INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) VALUES(?,?)";
         try{
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,ReceiptID);
             Ps.setString(2,id);
@@ -318,6 +319,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             System.out.println(item);
             try{      
+                Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
                 if(item == "ALL")
                     Ps = Con.prepareStatement("EXEC pr_getReceipt");
                 else{
@@ -336,6 +338,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         Con = JDBCConnection.getConnection(user, pass);
         String sql = "EXEC pr_getReceipt";
         try{
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             Ps = Con.prepareStatement(sql);
             Rs = Ps.executeQuery();
             receiptTable.setModel(DbUtils.resultSetToTableModel(Rs));
@@ -348,6 +351,7 @@ public class Take_Delivery extends javax.swing.JFrame {
         Con = JDBCConnection.getConnection(user, pass);
         String sql = "EXEC pr_getDeliveryNote ?";
         try{
+            Con.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
             Ps = Con.prepareStatement(sql);
             Ps.setString(1,id);
             Rs = Ps.executeQuery();

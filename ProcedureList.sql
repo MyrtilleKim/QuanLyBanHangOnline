@@ -3,7 +3,7 @@ GO
 ---------------------------------------------------
 --STORE PROCEDURE & TRANSACTION
 /*DROP PROC pr_Total
-DROP PROC pr_getReceipt
+DROP PROC pr_getReceiptx	
 DROP PROC pr_getReceiptByDistrict
 DROP PROC pr_getDeliveryNote
 DROP PROC pr_getProductByType
@@ -131,9 +131,9 @@ GO
 	'Southern Star Condensed Creamer', 
 	'07', 
 	'Can', 
-	17000, 
---	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg',
-	'CN0007',20
+	17000,
+	'CN0007',20,
+	'https://res.cloudinary.com/dzpxhrxsq/image/upload/v1648207120/Shopping_onl/fc8511700715fa6dd2f4087a03fe304d_lhmjla.jpg'
 
 SELECT * FROM RECEIPT
 select * from RECEIPT_DETAIL where ReceiptID = 'DH0009'*/
@@ -160,108 +160,108 @@ BEGIN
 	INSERT INTO RECEIPT_DETAIL (ReceiptID,ProductID,Quantity,Price) VALUES(@madh,@masp,@solg,(SELECT Price FROM PRODUCT WHERE ProductID = @masp))
 END
 GO
----------------------------------------------------
-CREATE PROC usp_ProductUpd
-	@madt char(6),
-	@macn char(6),
-	@masp char(6),
-	@tensp varchar(100),
-	@tonkho int,
-	@gia int
-AS
-BEGIN
-	BEGIN TRY
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-	BEGIN TRANSACTION 
-		EXEC pr_getProductByPartner @madt
-		DECLARE @ton int
-		SET @ton = (SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp)
-		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp		
-		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho - @ton WHERE ProductID = @masp				
-	COMMIT TRANSACTION 
-	END TRY
-	BEGIN CATCH
-	DECLARE @ErrorNumber INT = ERROR_NUMBER();
-	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
-	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
-	END CATCH
-END
-GO
----------------------------------------------------
-CREATE PROC usp_ProductView
-AS
-BEGIN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-	BEGIN TRANSACTION 
-		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT		
-	COMMIT TRANSACTION 
-END
-GO
----------------------------------------------------
-CREATE PROC usp_Purchase
-	@makh char(6), 
-	@gia int, 
-	@pttt bit, 
-	@masp1 char(6), @qty1 int, 
-	@masp2 char(6), @qty2 int
-AS
-BEGIN
-	BEGIN TRY
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-	BEGIN TRANSACTION 
-		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT
-		WAITFOR DELAY '00:00:20'
-		DECLARE @id char(6)
-		SET @id = DBO.AUTO_ReceiptID();
-		EXEC pr_OrderConfirmation @id, @makh, @gia, @pttt
-		EXEC pr_addRDetail @id, @masp1, @qty1
-		EXEC pr_addRDetail @id, @masp2, @qty2		
-	COMMIT TRANSACTION 
-	RETURN 1;
-	END TRY
-	BEGIN CATCH
-	DECLARE @ErrorNumber INT = ERROR_NUMBER();
-	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
-	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
-	WAITFOR DELAY '00:00:20'
-	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
-	END CATCH
-END
-GO
----------------------------------------------------
-CREATE PROC usp_getProductByType
-	@malsp char(2)
-AS
-BEGIN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
-	BEGIN TRAN
-	EXEC pr_getProductByType '01'
-	WAITFOR DELAY '00:00:20'
-	EXEC pr_getProductByType '01'
-	COMMIT TRAN
-END
-GO
----------------------------------------------------
-CREATE PROC usp_TakeDelivery
-	@madh char(6), @matx char(6)
-AS
-BEGIN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
-	BEGIN TRAN
-		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) values(@madh, @matx)
-	COMMIT TRAN
-END
-GO
----------------------------------------------------
-CREATE PROC usp_getReceiptByDistrict
-	@quan varchar(30)
-AS
-BEGIN
-	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
-	BEGIN TRAN
-	EXEC pr_getReceiptByDistrict @quan
-	WAITFOR DELAY '00:00:20'
-	EXEC pr_getReceiptByDistrict @quan
-	COMMIT TRAN
-END
+-----------------------------------------------------
+--CREATE PROC usp_ProductUpd
+--	@madt char(6),
+--	@macn char(6),
+--	@masp char(6),
+--	@tensp varchar(100),
+--	@tonkho int,
+--	@gia int
+--AS
+--BEGIN
+--	BEGIN TRY
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+--	BEGIN TRANSACTION 
+--		EXEC pr_getProductByPartner @madt
+--		DECLARE @ton int
+--		SET @ton = (SELECT Quantity FROM STORAGE WHERE BranchID = @macn AND ProductID = @masp)
+--		UPDATE STORAGE SET Quantity = @tonkho WHERE BranchID = @macn AND ProductID = @masp		
+--		UPDATE PRODUCT SET ProductName = @tensp, Price=@gia, NoInventory = NoInventory + @tonkho - @ton WHERE ProductID = @masp				
+--	COMMIT TRANSACTION 
+--	END TRY
+--	BEGIN CATCH
+--	DECLARE @ErrorNumber INT = ERROR_NUMBER();
+--	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
+--	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
+--	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
+--	END CATCH
+--END
+--GO
+-----------------------------------------------------
+--CREATE PROC usp_ProductView
+--AS
+--BEGIN
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+--	BEGIN TRANSACTION 
+--		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT		
+--	COMMIT TRANSACTION 
+--END
+--GO
+-----------------------------------------------------
+--CREATE PROC usp_Purchase
+--	@makh char(6), 
+--	@gia int, 
+--	@pttt bit, 
+--	@masp1 char(6), @qty1 int, 
+--	@masp2 char(6), @qty2 int
+--AS
+--BEGIN
+--	BEGIN TRY
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+--	BEGIN TRANSACTION 
+--		SELECT ProductID, ProductName, Unit, Price, NoInventory,Img FROM PRODUCT
+--		WAITFOR DELAY '00:00:20'
+--		DECLARE @id char(6)
+--		SET @id = DBO.AUTO_ReceiptID();
+--		EXEC pr_OrderConfirmation @id, @makh, @gia, @pttt
+--		EXEC pr_addRDetail @id, @masp1, @qty1
+--		EXEC pr_addRDetail @id, @masp2, @qty2		
+--	COMMIT TRANSACTION 
+--	RETURN 1;
+--	END TRY
+--	BEGIN CATCH
+--	DECLARE @ErrorNumber INT = ERROR_NUMBER();
+--	DECLARE @ErrorMessage NVARCHAR(1000) = ERROR_MESSAGE() 
+--	RAISERROR('Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ErrorMessage)
+--	WAITFOR DELAY '00:00:20'
+--	IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION 
+--	END CATCH
+--END
+--GO
+-----------------------------------------------------
+--CREATE PROC usp_getProductByType
+--	@malsp char(2)
+--AS
+--BEGIN
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+--	BEGIN TRAN
+--	EXEC pr_getProductByType '01'
+--	WAITFOR DELAY '00:00:20'
+--	EXEC pr_getProductByType '01'
+--	COMMIT TRAN
+--END
+--GO
+-----------------------------------------------------
+--CREATE PROC usp_TakeDelivery
+--	@madh char(6), @matx char(6)
+--AS
+--BEGIN
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
+--	BEGIN TRAN
+--		INSERT INTO DELIVERY_NOTE (ReceiptID, ShipperID) values(@madh, @matx)
+--	COMMIT TRAN
+--END
+--GO
+-----------------------------------------------------
+--CREATE PROC usp_getReceiptByDistrict
+--	@quan varchar(30)
+--AS
+--BEGIN
+--	SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED 
+--	BEGIN TRAN
+--	EXEC pr_getReceiptByDistrict @quan
+--	WAITFOR DELAY '00:00:20'
+--	EXEC pr_getReceiptByDistrict @quan
+--	COMMIT TRAN
+--END
