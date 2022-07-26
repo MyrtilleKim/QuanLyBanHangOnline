@@ -99,6 +99,11 @@ public class Products extends javax.swing.JFrame {
 
         productIDVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         productIDVar.setForeground(new java.awt.Color(153, 153, 255));
+        productIDVar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                productIDVarActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(153, 153, 255));
@@ -106,6 +111,11 @@ public class Products extends javax.swing.JFrame {
 
         unitVar.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         unitVar.setForeground(new java.awt.Color(153, 153, 255));
+        unitVar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unitVarActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(153, 153, 255));
@@ -519,6 +529,14 @@ public class Products extends javax.swing.JFrame {
         quanVar.setText("");
         priceVar1.setText("");
     }//GEN-LAST:event_clearBtnMouseClicked
+
+    private void unitVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unitVarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_unitVarActionPerformed
+
+    private void productIDVarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_productIDVarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_productIDVarActionPerformed
 
     public void SelectProduct() {
         Con = JDBCConnection.getConnection(user, pass);
